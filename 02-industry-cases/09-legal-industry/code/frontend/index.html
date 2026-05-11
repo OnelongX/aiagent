@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legal Industry AI Assistant · 法律行业 AI 助理</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">⚖️</span>
+      <h1>Legal AI Assistant</h1>
+      <span class="tag">行业落地 #9</span>
+    </div>
+    <nav class="tabs">
+      <button class="tab active" data-tab="contract">📋 合同审查</button>
+      <button class="tab" data-tab="cases">⚖️ 类案检索</button>
+      <button class="tab" data-tab="drafting">📝 文书起草</button>
+      <button class="tab" data-tab="qa">💬 法律咨询</button>
+      <button class="tab" data-tab="regulation">📰 法规追踪</button>
+      <button class="tab" data-tab="pii">🔒 PII 脱敏</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="notice">
+      ⚖️ <strong>AI 辅助 · 不是律师</strong> · 执业律师签字 · 律师承担最终责任
+      <span class="notice-detail">
+        法条 / 判例必须真实 · 文书自动加签字栏 · 应急情况立即拦截 · PII 双重脱敏
+      </span>
+    </div>
+
+    <!-- 1. 合同审查 -->
+    <section class="panel active" id="contract">
+      <h2>📋 合同审查</h2>
+      <p class="hint">输入合同条款 · LLM 识别风险 + 软化建议性语言 · PII 自动脱敏。</p>
+      <div class="form">
+        <label>合同类型
+          <select id="c-type">
+            <option>SaaS</option>
+            <option>采购</option>
+            <option>投资</option>
+            <option>劳动</option>
+            <option>保密</option>
+            <option>代理</option>
+            <option>其他</option>
+          </select>
+        </label>
+        <label>法域
+          <select id="c-juris">
+            <option>中国大陆</option>
+            <option>香港</option>
+            <option>美国</option>
+          </select>
+        </label>
+        <label>我方角色
+          <select id="c-role">
+            <option>甲方</option>
+            <option>乙方</option>
+            <option>双方</option>
+          </select>
+        </label>
+        <label>合同文本<textarea id="c-text" rows="10" placeholder="粘贴需要审查的合同条款..."></textarea></label>
+        <button onclick="reviewContract()">审查合同</button>
+      </div>
+      <div class="result" id="c-result"></div>
+    </section>
+
+    <!-- 2. 类案检索 -->
+    <section class="panel" id="cases">
+      <h2>⚖️ 类案检索</h2>
+      <p class="hint">真实判例库 · 审级权威加权 · 跨地区差异提示。<strong>本 demo 用 mock 数据 · 生产需接北大法宝 / 裁判文书网</strong>。</p>
+      <div class="form">
+        <label>案件事实(已脱敏)<textarea id="cs-facts" rows="6"></textarea></label>
+        <label>案由<input id="cs-claim" placeholder="如:民间借贷 / 劳动争议" /></label>
+        <label>法域<input id="cs-juris" value="中国大陆" /></label>
+        <button onclick="searchCases()">检索类案</button>
+      </div>
+      <div class="result" id="cs-result"></div>
+    </section>
+
+    <!-- 3. 文书起草 -->
+    <section class="panel" id="drafting">
+      <h2>📝 法律文书起草</h2>
+      <p class="hint">6 种文书 + 留 [作者填入] 占位 + 顶部强制律师签字栏 + 末尾 AI 协助声明。</p>
+      <div class="form">
+        <label>文书类型
+          <select id="d-type">
+            <option>民事起诉状</option>
+            <option>答辩状</option>
+            <option>代理词</option>
+            <option>法律意见书</option>
+            <option>仲裁申请书</option>
+            <option>律师函</option>
+          </select>
+        </label>
+        <label>案件信息(JSON)<textarea id="d-info" rows="6">{
+  "原告": "[作者填入]",
+  "被告": "[作者填入]",
+  "案由": "民间借贷纠纷",
+  "诉讼请求": "请求被告偿还借款本金及利息"
+}</textarea></label>
+        <button onclick="draftDoc()">起草文书</button>
+      </div>
+      <div class="result" id="d-result"></div>
+    </section>
+
+    <!-- 4. 法律咨询 -->
+    <section class="panel" id="qa">
+      <h2>💬 法律咨询</h2>
+      <p class="hint"><strong>边界最严</strong>:不能给法律建议 · 应急情况立即拦截 · 强制免责声明。</p>
+      <div class="form">
+        <label>你的问题<textarea id="qa-q" rows="4" placeholder="例如:民法典关于借贷的条款是什么?"></textarea></label>
+        <button onclick="askQA()">咨询</button>
+      </div>
+      <div class="result" id="qa-result"></div>
+    </section>
+
+    <!-- 5. 法规追踪 -->
+    <section class="panel" id="regulation">
+      <h2>📰 法规追踪 + 影响分析</h2>
+      <p class="hint">订阅多源法规更新 · 匹配业务关键词 · LLM 初步影响分析 · 必须律师审批后才能发客户。</p>
+      <div class="form">
+        <label>最近几天<input id="r-days" type="number" value="7" /></label>
+        <label>客户业务关键词(逗号分隔)<input id="r-keywords" placeholder="如:数据出境, 跨境支付, 个人信息" /></label>
+        <button onclick="trackReg()">扫描新规</button>
+      </div>
+      <div class="result" id="r-result"></div>
+    </section>
+
+    <!-- 6. PII 脱敏 -->
+    <section class="panel" id="pii">
+      <h2>🔒 PII 脱敏(独立工具)</h2>
+      <p class="hint">身份证 / 手机 / 邮箱 / 银行卡 / 地址 / 中文姓名 自动识别 + 替换占位符。</p>
+      <div class="form">
+        <label>原文<textarea id="p-text" rows="6" placeholder="粘贴含敏感信息的文本..."></textarea></label>
+        <button onclick="doPII()">脱敏</button>
+      </div>
+      <div class="result" id="p-result"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      📦 <a href="https://github.com/OnelongX/aiagent">GitHub · OnelongX/aiagent</a>
+      · 行业落地 #9 · <strong>AI 辅助法律工作应遵守律师法 / 律协 AI 规范及当地法规</strong>
+    </p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
