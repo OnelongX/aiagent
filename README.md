@@ -47,9 +47,9 @@
 | 5 | [Hermes + OpenClaw 配置](01-ai-toolstack/05-hermes-openclaw/) | 个人 AI 网关 + 工具编排 |
 | 6 | [Claude Agent SDK 完整教程](01-ai-toolstack/06-claude-agent-sdk/) | Python + TS 双语 · 6 大核心能力 |
 
-### 第二阶段:行业落地(7 篇)
+### 第二阶段:行业落地(8 篇)
 
-5 个 Agent SDK 工具调度案例 + 2 个全栈产品级实战。
+5 个 Agent SDK 工具调度案例 + 3 个全栈产品级实战(均含完整可跑代码)。
 
 | # | 篇目 | 关键创新 |
 |---|---|---|
@@ -60,6 +60,7 @@
 | 5 | [绿电电商客服系统](02-industry-cases/05-solar-ecommerce/) | 接 OMS · 下单闭环 · Claude+GPT-5 双引擎 |
 | **6** | [**全栈 AI 工作台**](02-industry-cases/06-fullstack-workbench/) ⭐ | Vue + FastAPI + Chroma + Docker · **完整可跑代码** |
 | **7** | [**Vectorless RAG 客服**](02-industry-cases/07-vectorless-rag-cs/) ⭐ | PageIndex 中文实战 · **完整可跑代码** |
+| **8** | [**学生论文助手**](02-industry-cases/08-thesis-assistant/) ⭐ | 8 能力 + 学术诚信红线 + DOI 校验 · **完整可跑代码** |
 
 ### 第三阶段:跨行业平移(2 篇)
 

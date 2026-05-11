@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thesis Assistant · 学生论文助手</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">📚</span>
+      <h1>Thesis Assistant</h1>
+      <span class="tag">行业落地 #8</span>
+    </div>
+    <nav class="tabs">
+      <button class="tab active" data-tab="outline">📋 大纲</button>
+      <button class="tab" data-tab="section">✍️ 起草</button>
+      <button class="tab" data-tab="polish">💎 润色</button>
+      <button class="tab" data-tab="cite">📖 文献</button>
+      <button class="tab" data-tab="dedupe">🔍 查重</button>
+      <button class="tab" data-tab="defense">🎤 答辩</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 顶部诚信声明 -->
+    <div class="notice">
+      ⚠️ 本工具是学术辅助 · 不是代笔
+      <span class="notice-detail">引用 DOI 校验 · 章节自动标记 AI 协助 · 学术诚信责任在作者本人</span>
+    </div>
+
+    <!-- 1. 大纲 -->
+    <section class="panel active" id="outline">
+      <h2>📋 大纲生成</h2>
+      <p class="hint">生成多套大纲让你对比 · 不是 AI 帮你决定结构。</p>
+      <div class="form">
+        <label>论文题目<input id="o-topic" placeholder="如:钙钛矿太阳能电池稳定性研究" /></label>
+        <label>学科<input id="o-discipline" placeholder="如:材料科学" /></label>
+        <label>论文类型
+          <select id="o-type">
+            <option>实验型</option>
+            <option>综述型</option>
+            <option>工程型</option>
+            <option>理论型</option>
+          </select>
+        </label>
+        <label>目标字数<input id="o-words" type="number" value="8000" /></label>
+        <label>关键论点(一行一个)<textarea id="o-points" rows="3" placeholder="例如:&#10;ABX3 钙钛矿结构稳定性&#10;湿热环境下的衰减机制"></textarea></label>
+        <button onclick="genOutline()">生成 3 套大纲</button>
+      </div>
+      <div class="result" id="o-result"></div>
+    </section>
+
+    <!-- 2. 章节起草 -->
+    <section class="panel" id="section">
+      <h2>✍️ 章节起草</h2>
+      <p class="hint">AI 给框架,占位用 <code>[作者填入]</code> 标记,具体内容必须你自己补。</p>
+      <div class="form">
+        <label>章节标题<input id="s-chapter" placeholder="如:2. 理论基础" /></label>
+        <label>关键论点(一行一个)<textarea id="s-points" rows="3"></textarea></label>
+        <label>目标字数<input id="s-words" type="number" value="1000" /></label>
+        <button onclick="genSection()">起草此章节</button>
+      </div>
+      <div class="result" id="s-result"></div>
+    </section>
+
+    <!-- 3. 润色 -->
+    <section class="panel" id="polish">
+      <h2>💎 学术润色</h2>
+      <p class="hint">输出 diff · 你审阅每处修改 · 不接受可以回退。</p>
+      <div class="form">
+        <label>原文<textarea id="p-text" rows="8" placeholder="粘贴需要润色的段落..."></textarea></label>
+        <label>风格
+          <select id="p-style">
+            <option value="academic_zh">中文学术</option>
+            <option value="academic_en">英文学术</option>
+          </select>
+        </label>
+        <button onclick="genPolish()">润色(输出 diff)</button>
+      </div>
+      <div class="result" id="p-result"></div>
+    </section>
+
+    <!-- 4. 文献检索 -->
+    <section class="panel" id="cite">
+      <h2>📖 文献检索</h2>
+      <p class="hint">真实学术 API · arXiv + Crossref + OpenAlex · 自动 DOI 校验。</p>
+      <div class="form">
+        <label>检索关键词<input id="c-query" placeholder="如:perovskite stability" /></label>
+        <label>年份从<input id="c-yfrom" type="number" placeholder="2020" /></label>
+        <label>年份到<input id="c-yto" type="number" placeholder="2024" /></label>
+        <label>结果数<input id="c-limit" type="number" value="10" /></label>
+        <button onclick="genCite()">检索</button>
+      </div>
+      <div class="result" id="c-result"></div>
+    </section>
+
+    <!-- 5. 查重 -->
+    <section class="panel" id="dedupe">
+      <h2>🔍 相似度检测</h2>
+      <p class="hint">本地相似度提示 · <strong>不是查重 · 不能用于伪装抄袭</strong>。真实查重请用知网 / Turnitin。</p>
+      <div class="form">
+        <label>待检测文本<textarea id="d-text" rows="6"></textarea></label>
+        <label>对比文本(一行一段,作者自己之前写过的内容)<textarea id="d-ref" rows="6"></textarea></label>
+        <label>阈值<input id="d-th" type="number" step="0.05" value="0.85" /></label>
+        <button onclick="genDedupe()">检测相似</button>
+      </div>
+      <div class="result" id="d-result"></div>
+    </section>
+
+    <!-- 6. 答辩 -->
+    <section class="panel" id="defense">
+      <h2>🎤 答辩 Q&A 模拟</h2>
+      <p class="hint">3 类委员(严厉派 / 友好派 / 跨学科派)各提 N 个问题 · 帮你提前准备。</p>
+      <div class="form">
+        <label>论文摘要<textarea id="df-abs" rows="5"></textarea></label>
+        <label>大纲(一行一个章节)<textarea id="df-out" rows="4"></textarea></label>
+        <label>每类问几个<input id="df-n" type="number" value="3" /></label>
+        <button onclick="genDefense()">模拟答辩</button>
+      </div>
+      <div class="result" id="df-result"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      📦 <a href="https://github.com/OnelongX/aiagent">GitHub · OnelongX/aiagent</a>
+      · 行业落地 #8 · <strong>AI 辅助应遵守所在学术机构的诚信规范</strong>
+    </p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
