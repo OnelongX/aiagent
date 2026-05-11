@@ -11,7 +11,7 @@
 <div align="center">
 
 <a href="https://github.com/OnelongX/aiagent">
-<img src="../../assets/wechat-qrcode.png" width="320" alt="公众号:IamOnelong" />
+<img src="../../assets/wechat-qrcode.png" width="600" alt="公众号:IamOnelong" />
 </a>
 
 📖 **本文同步发布于公众号「实战复盘」** · 微信号:`IamOnelong`

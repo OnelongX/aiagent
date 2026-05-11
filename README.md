@@ -83,33 +83,22 @@
 
 <div align="center">
 
-<table border="0">
-<tr>
-<td align="center" width="240">
-<img src="assets/wechat-qrcode.png" width="360" alt="公众号:IamOnelong" />
-<br/>
-<sub><b>扫码关注 · IamOnelong</b></sub>
-</td>
-<td align="left">
+<a href="https://github.com/OnelongX/aiagent">
+<img src="assets/wechat-qrcode.png" alt="微信搜一搜 IamOnelong" width="720" />
+</a>
 
-**每周更新 AI Agent 行业落地实战**
+</div>
 
-📚 16+ 篇沉淀,从 Claude Agent SDK 到全栈产品
-🔧 行业落地系列覆盖绿电 / 合同 / 客服 / 电商 / 论文等场景
-🛠️ 跨行业平移已验证多个方向
+**每周更新 AI Agent 行业落地实战** · 微信搜索 `IamOnelong`
+
+- 📚 16+ 篇沉淀,从 Claude Agent SDK 到全栈产品
+- 🔧 行业落地系列覆盖绿电 / 合同 / 客服 / 电商 / 论文等场景
+- 🛠️ 跨行业平移已验证多个方向
 
 **留言区欢迎**:
 - 你在哪个行业 · 卡在哪一步
 - 想看哪个场景的深度落地
 - 你正在做的 Agent 卡在哪一个 Hook
-
-📮 公众号搜索:**IamOnelong** · 或扫上方二维码
-
-</td>
-</tr>
-</table>
-
-</div>
 
 ---
 
