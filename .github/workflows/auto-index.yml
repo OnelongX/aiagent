@@ -28,25 +28,20 @@ jobs:
       - name: Regenerate main README article stats
         run: |
           python - <<'PY'
-          import re, os, datetime
+          import re, datetime
           from pathlib import Path
 
           repo = Path(".")
-          sections = ["01-ai-toolstack", "02-industry-cases", "03-cross-industry", "04-survey"]
-          total = 0
-          for s in sections:
-              for d in sorted((repo / s).iterdir()) if (repo / s).is_dir() else []:
-                  if (d / "README.md").exists():
-                      total += 1
+          # Count all README.md under article dirs, excluding root README.md and .github
+          total = sum(
+              1 for p in repo.rglob("README.md")
+              if p != repo / "README.md"
+              and ".github" not in p.parts
+          )
 
-          # Update badge in README
           readme = repo / "README.md"
           text = readme.read_text(encoding="utf-8")
-          text = re.sub(
-              r"Articles-\d+-blue",
-              f"Articles-{total}-blue",
-              text
-          )
+          text = re.sub(r"Articles-\d+-blue", f"Articles-{total}-blue", text)
           text = re.sub(
               r"<!-- LAST-UPDATED -->.*<!-- /LAST-UPDATED -->",
               f"<!-- LAST-UPDATED -->最近更新:{datetime.date.today().isoformat()}<!-- /LAST-UPDATED -->",
