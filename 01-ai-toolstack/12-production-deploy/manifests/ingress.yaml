@@ -1,0 +1,51 @@
+# Ingress · 主流量入口(v1 100%)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: agent-api
+  namespace: agent
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"     # LLM 调用可能很慢
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts: [api.example.com]
+    secretName: api-tls
+  rules:
+  - host: api.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: agent-api
+            port:
+              number: 80
+---
+# Canary Ingress · 灰度 5% 流量到 v2(主 Ingress 不变)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: agent-api-canary
+  namespace: agent
+  annotations:
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "5"            # 5% → 25% → 50% → 100%
+    # 按 header 灰度(开发同事先用):
+    # nginx.ingress.kubernetes.io/canary-by-header: "x-canary"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: api.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: agent-api-v2                                # ← 新版本 Service
+            port:
+              number: 80

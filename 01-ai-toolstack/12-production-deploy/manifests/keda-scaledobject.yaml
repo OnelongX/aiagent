@@ -1,0 +1,43 @@
+# KEDA · 从 Prometheus 拉自定义指标喂给 HPA
+# 前置:helm install keda kedacore/keda -n keda
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: agent-api-keda
+  namespace: agent
+spec:
+  scaleTargetRef:
+    name: agent-api
+  minReplicaCount: 2
+  maxReplicaCount: 20
+  pollingInterval: 15                # 15 秒拉一次指标
+  cooldownPeriod: 300                # 缩容前等 5 分钟
+  triggers:
+  # 触发 1:在飞请求数
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus.monitoring.svc.cluster.local:9090
+      metricName: inflight_llm_requests
+      query: avg(inflight_llm_requests{app="agent-api"})
+      threshold: '5'
+
+  # 触发 2:p95 延迟(长尾)
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus.monitoring.svc.cluster.local:9090
+      metricName: p95_latency_ms
+      query: |
+        histogram_quantile(0.95,
+          sum(rate(http_request_duration_seconds_bucket{app="agent-api"}[1m])) by (le)
+        ) * 1000
+      threshold: '5000'              # > 5000ms 扩容
+
+  # 触发 3:上游 429 率
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus.monitoring.svc.cluster.local:9090
+      metricName: llm_429_rate
+      query: |
+        sum(rate(llm_responses_total{status="429"}[1m]))
+          / sum(rate(llm_responses_total[1m]))
+      threshold: '0.01'              # > 1% 限流就扩 + LiteLLM fallback

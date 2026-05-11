@@ -1,0 +1,46 @@
+# HPA v2 · 复合指标(自定义 + CPU 兜底)· 扩快缩慢
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: agent-api-hpa
+  namespace: agent
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: agent-api
+  minReplicas: 2
+  maxReplicas: 20
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 30
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 30             # 30 秒内最多扩 100%(翻倍)
+      - type: Pods
+        value: 4
+        periodSeconds: 30             # 或 30 秒内最多加 4 个 pod
+      selectPolicy: Max               # 取较激进的
+    scaleDown:
+      stabilizationWindowSeconds: 300 # 5 分钟稳定窗口(防抖)
+      policies:
+      - type: Percent
+        value: 25
+        periodSeconds: 60             # 每分钟最多缩 25%
+  metrics:
+  # 1. 自定义:每 pod 在飞 LLM 请求数(主)
+  - type: Pods
+    pods:
+      metric:
+        name: inflight_llm_requests
+      target:
+        type: AverageValue
+        averageValue: "5"
+  # 2. CPU 兜底(自定义指标失效时)
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70

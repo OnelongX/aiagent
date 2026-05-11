@@ -1,0 +1,126 @@
+# LiteLLM Router · 多 endpoint fallback + 负载均衡 + budget
+# 启动:litellm --config litellm-config.yaml --port 4000
+#
+# 你的应用调:
+#   client = OpenAI(api_key="dummy", base_url="http://litellm:4000")
+#   client.chat.completions.create(model="claude-sonnet", ...)
+# LiteLLM 自动选最优 endpoint · 失败自动切
+
+model_list:
+  # ============================
+  # claude-sonnet · 3 个 endpoint(主备备)
+  # ============================
+  - model_name: claude-sonnet
+    litellm_params:
+      model: anthropic/claude-sonnet-4-5-20250220
+      api_base: https://livetoken.top/v1
+      api_key: os.environ/LIVETOKEN_KEY
+      rpm: 500                   # 单 endpoint 限速
+    model_info:
+      tier: primary
+
+  - model_name: claude-sonnet
+    litellm_params:
+      model: anthropic/claude-sonnet-4-5-20250220
+      api_key: os.environ/ANTHROPIC_API_KEY
+      rpm: 200
+    model_info:
+      tier: secondary
+
+  - model_name: claude-sonnet
+    litellm_params:
+      model: bedrock/anthropic.claude-sonnet-4-5-20250220
+      aws_region_name: us-west-2
+      rpm: 1000
+    model_info:
+      tier: tertiary
+
+  # ============================
+  # gpt-5 · 2 个 endpoint
+  # ============================
+  - model_name: gpt-5
+    litellm_params:
+      model: openai/gpt-5
+      api_base: https://livetoken.top/v1
+      api_key: os.environ/LIVETOKEN_KEY
+
+  - model_name: gpt-5
+    litellm_params:
+      model: openai/gpt-5
+      api_key: os.environ/OPENAI_API_KEY
+
+  # ============================
+  # gemini-2.5-pro
+  # ============================
+  - model_name: gemini-2.5-pro
+    litellm_params:
+      model: gemini/gemini-2.5-pro
+      api_base: https://livetoken.top/v1
+      api_key: os.environ/LIVETOKEN_KEY
+
+  # ============================
+  # 私有 Qwen3-14B(内网 · 涉密走这个 · 参考 #10)
+  # ============================
+  - model_name: private-qwen
+    litellm_params:
+      model: openai/qwen3-14b
+      api_base: http://qwen.private.svc.cluster.local:8000/v1
+      api_key: dummy
+
+  # ============================
+  # 路由别名:cheap(分诊路由专用)
+  # ============================
+  - model_name: cheap
+    litellm_params:
+      model: anthropic/claude-haiku-4-5
+      api_base: https://livetoken.top/v1
+      api_key: os.environ/LIVETOKEN_KEY
+
+  - model_name: cheap
+    litellm_params:
+      model: gemini/gemini-2.5-flash-lite
+      api_key: os.environ/LIVETOKEN_KEY
+
+litellm_settings:
+  # 全局重试
+  num_retries: 2
+  request_timeout: 60
+  retry_after: 60                # 严格遵守 Retry-After header
+
+  # 跨模型 fallback(主家全挂时)
+  fallbacks:
+    - claude-sonnet: ["gpt-5", "gemini-2.5-pro"]
+    - gpt-5: ["claude-sonnet", "gemini-2.5-pro"]
+    - gemini-2.5-pro: ["gpt-5", "claude-sonnet"]
+  # 涉密别 fallback 到公有云
+  # private-qwen: 不配 fallback · 失败就 raise
+
+  # 限流后切换(429 → 立即切下一个 endpoint)
+  context_window_fallbacks:
+    - gpt-5: ["gemini-2.5-pro"]   # 超长上下文切 Gemini 2M
+
+  # 缓存(Prompt Caching · 省钱)
+  cache: true
+  cache_params:
+    type: redis
+    host: redis.cache.svc.cluster.local
+    port: 6379
+    ttl: 3600
+
+  # budget 限制(全局)
+  max_budget: 1000               # ¥/day(超了就拒新请求)
+  budget_duration: 1d
+  alert_to_webhook_url: os.environ/SLACK_WEBHOOK_URL
+
+router_settings:
+  routing_strategy: "least-busy"  # 或 "latency-based" / "usage-based-routing"
+  enable_pre_call_checks: true    # 调用前预检模型是否健康
+  redis_host: redis.cache.svc.cluster.local
+  redis_port: 6379
+
+  # 健康检查
+  health_check_interval: 30       # 每 30 秒探活 endpoint
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  database_url: os.environ/DATABASE_URL    # 持久化 budget / 日志

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: agent
+  labels:
+    name: agent
+    # 启用 NetworkPolicy(可选 · 增加安全)
+    # pod-security.kubernetes.io/enforce: restricted

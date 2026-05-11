@@ -36,9 +36,9 @@
 
 ## 内容索引
 
-### 第一阶段:AI 工具栈(11 篇)
+### 第一阶段:AI 工具栈(12 篇)
 
-从用 AI 编程工具,到用官方 SDK 造自己的 AI Agent,再到多 Agent 协作 + 防泄密 + 评测体系。
+从用 AI 编程工具,到用官方 SDK 造自己的 AI Agent,再到多 Agent 协作 + 防泄密 + 评测 + 生产部署。
 
 | # | 篇目 | 核心 |
 |---|---|---|
@@ -53,6 +53,7 @@
 | 9 | [Subagent 模式深度](01-ai-toolstack/09-subagent-patterns/) | 5 经典模式 + 3 家协作对照 + 5 反模式 · 实战收藏 |
 | 10 | [AI 防泄密 + 脱敏完整指南](01-ai-toolstack/10-ai-security-pii/) | 5 通道 + 4 层防御 + 统一 PII Toolkit + 私有 LLM 路由 |
 | 11 | [Agent Eval 体系](01-ai-toolstack/11-agent-eval/) | RAGAS / Phoenix / Langfuse / OpenAI Tracing 四方对照 + CI 集成 |
+| 12 | [Production Agent 部署](01-ai-toolstack/12-production-deploy/) | K8s + HPA + 灰度 + 回滚 · 完整 YAML + LiteLLM Router |
 
 ### 第二阶段:行业落地(13 篇 · 收官)
 
@@ -186,7 +187,7 @@ aiagent/
 │   └── endpoints.md                # endpoint 选型 + 配置示例
 ├── sync_to_github.py               # 本地同步脚本(WeChat → GitHub)
 ├── .github/workflows/              # CI:自动更新索引 + link check
-├── 01-ai-toolstack/                # AI 工具栈 11 篇
+├── 01-ai-toolstack/                # AI 工具栈 12 篇
 ├── 02-industry-cases/              # 行业落地 13 篇
 ├── 03-cross-industry/              # 跨行业平移 2 篇
 └── 04-survey/                      # 阶段性综述

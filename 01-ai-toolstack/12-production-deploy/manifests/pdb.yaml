@@ -1,0 +1,11 @@
+# PDB · 保证维护 / 升级期间至少 2 个 pod 可用
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: agent-api-pdb
+  namespace: agent
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: agent-api

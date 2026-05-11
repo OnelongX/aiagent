@@ -1,0 +1,64 @@
+# Production-grade Dockerfile · 多阶段构建 + 非 root + 健康检查
+# 构建:docker build -f Dockerfile.prod -t agent-api:v1.2.0 .
+
+# ===== Stage 1:builder =====
+FROM python:3.11-slim AS builder
+
+WORKDIR /build
+
+# 系统依赖(只在 builder 阶段)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# 装 Python 依赖到独立目录(便于复制到 runtime)
+COPY requirements.txt .
+RUN pip install --no-cache-dir --target=/install -r requirements.txt
+
+
+# ===== Stage 2:runtime =====
+FROM python:3.11-slim AS runtime
+
+# 非 root 用户
+RUN groupadd -g 10001 app && \
+    useradd -u 10001 -g app -m -d /app app
+
+# runtime 必备(curl 用于 healthcheck)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    tini \
+    && rm -rf /var/lib/apt/lists/*
+
+# 从 builder 复制依赖
+COPY --from=builder /install /usr/local/lib/python3.11/site-packages
+
+# 复制代码
+WORKDIR /app
+COPY --chown=app:app . .
+
+USER app
+
+# 环境
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PORT=8000
+
+EXPOSE 8000
+
+# Docker 层 healthcheck(K8s 用 readinessProbe · 这是 docker 单独跑用)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -fsS http://localhost:8000/api/health || exit 1
+
+# tini 处理 SIGTERM · graceful shutdown
+ENTRYPOINT ["/usr/bin/tini", "--"]
+
+# uvicorn · 单 worker(K8s 用 pod 副本横向扩展 · 不用多 worker)
+CMD ["uvicorn", "app.main:app", \
+     "--host", "0.0.0.0", \
+     "--port", "8000", \
+     "--workers", "1", \
+     "--access-log", \
+     "--proxy-headers", \
+     "--forwarded-allow-ips=*", \
+     "--timeout-graceful-shutdown", "60"]

@@ -1,0 +1,82 @@
+# Deployment · 滚动 0 中断 + 三件套健康检查 + graceful shutdown
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent-api
+  namespace: agent
+  labels:
+    app: agent-api
+    version: v1
+spec:
+  replicas: 3
+  revisionHistoryLimit: 10            # 保留 10 个历史版本(rollout undo 用)
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1                     # 滚动期间至多多 1 个 pod
+      maxUnavailable: 0               # 0 中断
+  selector:
+    matchLabels:
+      app: agent-api
+  template:
+    metadata:
+      labels:
+        app: agent-api
+        version: v1                   # 灰度按这个 label 区分(v1 / v2)
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001              # 非 root 运行
+        fsGroup: 10001
+      terminationGracePeriodSeconds: 60  # 等当前请求完成
+      containers:
+      - name: api
+        image: your-registry/agent-api:v1.2.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+          name: http
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2
+            memory: 2Gi
+        envFrom:
+        - configMapRef:
+            name: agent-config
+        - secretRef:
+            name: agent-secrets
+        # 启动慢(LLM SDK 初始化)· 给 startupProbe
+        startupProbe:
+          httpGet:
+            path: /api/health
+            port: 8000
+          failureThreshold: 30
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        lifecycle:
+          preStop:
+            exec:
+              # 给 LB 时间从服务列表里摘掉
+              command: ["sh", "-c", "sleep 10"]

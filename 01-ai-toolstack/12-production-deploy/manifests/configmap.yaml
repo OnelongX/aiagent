@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agent-config
+  namespace: agent
+data:
+  # LLM 配置(钉死小版本号 · 防自动升级)
+  LLM_API_BASE:    "https://livetoken.top/v1"
+  LLM_MODEL:       "claude-sonnet-4-5-20250220"
+
+  # Langfuse(Prompt 管理 + Tracing · 参考 #11)
+  LANGFUSE_HOST:   "http://langfuse.observability.svc.cluster.local:3000"
+
+  # 版本标记(3 层独立)
+  CODE_VERSION:    "v1.2.0"
+  PROMPT_VERSION:  "v3"           # Langfuse 里的版本号
+  MODEL_VERSION:   "claude-sonnet-4-5-20250220"
+
+  # 限流配置(单用户)
+  MAX_TOKENS_PER_REQUEST:        "8000"
+  MAX_REQUESTS_PER_USER_PER_MIN: "30"
+  MAX_TOKENS_PER_USER_PER_DAY:   "1000000"
+  MAX_COST_PER_USER_PER_DAY_RMB: "100"
+
+  # 全局 budget 告警
+  GLOBAL_COST_ALERT_PER_HOUR_RMB: "1000"
+
+  # 涉密路由(参考 #10)
+  PRIVATE_LLM_BASE:  "http://qwen.private.svc.cluster.local:8000/v1"
+  PRIVATE_LLM_MODEL: "qwen3-14b"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: agent-secrets
+  namespace: agent
+type: Opaque
+stringData:
+  # 替换为你的真实 key
+  LLM_API_KEY:           "sk-livetoken-xxxxx"
+  LANGFUSE_SECRET_KEY:   "sk-lf-xxxxx"
+  LANGFUSE_PUBLIC_KEY:   "pk-lf-xxxxx"
+  # 私有 LLM 不需要真 key · 给个 dummy
+  PRIVATE_LLM_API_KEY:   "dummy"
