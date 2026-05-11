@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medical AI Assistant · 行业落地 #11</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">⚕️</span>
+      <div>
+        <h1>Medical AI Assistant</h1>
+        <small>行业落地 #11 · 影像 / 分诊 / 用药 / 出院 / CDSS / 患者科普</small>
+      </div>
+    </div>
+    <div class="badge danger">AI 辅助 · 不替代医师 · 医师签字担责</div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-target="imaging">📷 影像辅助</button>
+    <button class="tab" data-target="triage">🚑 智能分诊</button>
+    <button class="tab" data-target="medication">💊 用药审查</button>
+    <button class="tab" data-target="discharge">📋 出院小结</button>
+    <button class="tab" data-target="cdss">🧠 CDSS</button>
+    <button class="tab" data-target="education">💬 患者科普</button>
+    <button class="tab" data-target="pii">🔒 PII 脱敏</button>
+  </nav>
+
+  <main>
+    <!-- 影像辅助 -->
+    <section id="imaging" class="panel active">
+      <div class="hint">影像 AI 仅出"建议复核"语言 · 100% 必须放射科医师复核 · 不出诊断结论</div>
+      <div class="row">
+        <label>检查类型
+          <select id="img-modality">
+            <option>CT</option><option>MRI</option>
+            <option>X-ray</option><option>US</option><option>DR</option>
+          </select>
+        </label>
+        <label>检查部位 <input id="img-body" value="胸部" /></label>
+      </div>
+      <label>临床信息 <input id="img-history" value="患者 65 岁, 长期吸烟史 30 年, 咳嗽 2 周" /></label>
+      <label>放射所见
+        <textarea id="img-findings" rows="4">右肺上叶可见约 8mm 结节影,边缘较清,周围未见卫星灶。纵隔淋巴结未见明显肿大。</textarea>
+      </label>
+      <button onclick="runImaging()">提交</button>
+      <pre id="img-out" class="out"></pre>
+    </section>
+
+    <!-- 智能分诊 -->
+    <section id="triage" class="panel">
+      <div class="hint">疑似急救场景 → 不进 LLM · 直接红色 1 级 · 推 120</div>
+      <div class="row">
+        <label>年龄 <input id="tri-age" type="number" value="55" /></label>
+        <label>性别
+          <select id="tri-sex"><option value="male">男</option><option value="female">女</option></select>
+        </label>
+        <label>持续时间 <input id="tri-dur" value="持续 1 小时" /></label>
+      </div>
+      <label>主诉
+        <textarea id="tri-cc" rows="2">胸口压榨样疼痛, 向左肩放射, 伴大汗</textarea>
+      </label>
+      <label>既往史 <input id="tri-hist" value="高血压 10 年, 糖尿病 5 年" /></label>
+      <button onclick="runTriage()">提交</button>
+      <pre id="tri-out" class="out"></pre>
+    </section>
+
+    <!-- 用药审查 -->
+    <section id="medication" class="panel">
+      <div class="hint">通用名输入(不识别商品名)· 接药品数据库 · 处方医师签字</div>
+      <label>药品(通用名, 逗号分隔)
+        <input id="med-drugs" value="华法林, 阿司匹林, 奥美拉唑" />
+      </label>
+      <div class="row">
+        <label>年龄 <input id="med-age" type="number" value="68" /></label>
+        <label>体重 (kg) <input id="med-weight" type="number" value="62" /></label>
+        <label>肾功能
+          <select id="med-renal">
+            <option value="normal">正常</option>
+            <option value="mild">轻度</option>
+            <option value="moderate">中度</option>
+            <option value="severe">重度</option>
+          </select>
+        </label>
+        <label>肝功能
+          <select id="med-hepatic">
+            <option value="normal">正常</option>
+            <option value="mild">轻度</option>
+            <option value="moderate">中度</option>
+            <option value="severe">重度</option>
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <label><input type="checkbox" id="med-preg" /> 妊娠</label>
+        <label><input type="checkbox" id="med-lact" /> 哺乳</label>
+        <label>过敏史 <input id="med-allergy" placeholder="如 青霉素类" /></label>
+      </div>
+      <button onclick="runMedication()">提交</button>
+      <pre id="med-out" class="out"></pre>
+    </section>
+
+    <!-- 出院小结 -->
+    <section id="discharge" class="panel">
+      <div class="hint">AI 起草 · 顶部含医师签字栏 · 主治签字担责</div>
+      <div class="row">
+        <label>入院日期 <input id="dis-in" value="2026-05-01" /></label>
+        <label>出院日期 <input id="dis-out" value="2026-05-10" /></label>
+      </div>
+      <label>主诉 <input id="dis-cc" value="间断胸痛 1 周加重 1 天" /></label>
+      <label>入院诊断 <input id="dis-adm" value="不稳定性心绞痛" /></label>
+      <label>出院诊断 <input id="dis-dis" value="冠心病·不稳定性心绞痛(CCS II)" /></label>
+      <label>住院过程
+        <textarea id="dis-course" rows="3">入院后行 PCI 术,LAD 中段植入支架 1 枚,术后恢复良好,无并发症。</textarea>
+      </label>
+      <label>出院带药(通用名, 逗号分隔)
+        <input id="dis-meds" value="阿司匹林, 氯吡格雷, 阿托伐他汀, 美托洛尔" />
+      </label>
+      <label>随访 <input id="dis-fu" value="1 个月后心内科门诊复查" /></label>
+      <button onclick="runDischarge()">提交</button>
+      <pre id="dis-out-box" class="out"></pre>
+    </section>
+
+    <!-- CDSS -->
+    <section id="cdss" class="panel">
+      <div class="hint">CDSS = 临床决策支持 · 给医师提示 · 不下医嘱</div>
+      <div class="row">
+        <label>年龄 <input id="cdss-age" type="number" value="42" /></label>
+        <label>性别
+          <select id="cdss-sex"><option value="male">男</option><option value="female">女</option></select>
+        </label>
+      </div>
+      <label>主诉
+        <textarea id="cdss-cc" rows="2">反复发作性右上腹痛 3 月, 油腻饮食后明显</textarea>
+      </label>
+      <label>病史 <input id="cdss-hist" value="无慢性病, 无肝炎" /></label>
+      <label>当前诊断(可选)<input id="cdss-dx" placeholder="如 待查" /></label>
+      <button onclick="runCDSS()">提交</button>
+      <pre id="cdss-out" class="out"></pre>
+    </section>
+
+    <!-- 患者科普 -->
+    <section id="education" class="panel">
+      <div class="hint">心理危机 / 急救 → 不进 LLM · 直接拨打 120 / 心理热线</div>
+      <div class="row">
+        <label>年龄 <input id="qa-age" type="number" value="30" /></label>
+        <label><input type="checkbox" id="qa-followup" /> 复诊咨询</label>
+      </div>
+      <label>问题
+        <textarea id="qa-q" rows="3">我最近经常头痛, 想知道是不是脑子有问题?</textarea>
+      </label>
+      <button onclick="runQA()">提交</button>
+      <pre id="qa-out" class="out"></pre>
+    </section>
+
+    <!-- PII 脱敏 -->
+    <section id="pii" class="panel">
+      <div class="hint">医疗 PII 8 类:身份证 / 手机 / 邮箱 / 银行卡 / 地址 / 姓名 / 住院号 / 病历号 / 医保号 / 床号</div>
+      <label>原文
+        <textarea id="pii-in" rows="5">患者张三, 男, 65 岁, 身份证 110101196001011234, 手机 13800138001, 病历号:1234567, 住院号:20260510001, 医保号:1101011200000001, 床号:3 床, 入院诊断:冠心病。</textarea>
+      </label>
+      <button onclick="runPII()">脱敏</button>
+      <pre id="pii-out" class="out"></pre>
+    </section>
+  </main>
+
+  <footer>
+    <span>本工具是医师辅助 · AI 不诊断 · AI 不开方 · 医师签字担责</span>
+    <a href="https://github.com/OnelongX/aiagent">github.com/OnelongX/aiagent</a>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
