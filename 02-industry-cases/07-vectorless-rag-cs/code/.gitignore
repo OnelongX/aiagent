@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Env / secrets
+.env
+.env.local
+
+# Runtime data(用户 ingest 的 PDF + 索引 + 数据库)
+knowledge/*.pdf
+knowledge/*.md
+knowledge/*.txt
+indexes/*.json
+data/*.db
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Page design
+*.pen
+
+# Local PageIndex clone(开源依赖,setup 时拉)
+PageIndex/

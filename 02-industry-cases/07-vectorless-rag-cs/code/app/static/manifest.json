@@ -1,0 +1,16 @@
+{
+  "name": "PageIndex AI - Smart Customer Service",
+  "short_name": "PageIndex AI",
+  "description": "AI-powered customer service with RAG knowledge base",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#2563EB",
+  "icons": [
+    {
+      "src": "/static/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

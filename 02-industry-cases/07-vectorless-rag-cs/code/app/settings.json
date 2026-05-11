@@ -1,0 +1,24 @@
+{
+  "profile": {
+    "name": "Demo User",
+    "email": "demo@example.com",
+    "role": "客服专员",
+    "timezone": "UTC+8 (Asia/Shanghai)",
+    "avatar": ""
+  },
+  "ai": {
+    "model": "gpt-4o-mini",
+    "auto_suggest": true,
+    "rag_enabled": true,
+    "logging_enabled": false,
+    "temperature": 0.7,
+    "max_tokens": 2048
+  },
+  "notifications": {
+    "new_conversation": true,
+    "resolution": true,
+    "escalation": true,
+    "weekly_report": false,
+    "sound": true
+  }
+}

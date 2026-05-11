@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI 驱动的智能客服系统，基于 RAG 知识库">
+    <meta name="theme-color" content="#2563EB">
+    <title>PageIndex AI - 智能客服</title>
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a href="#messageInput" class="skip-link">跳转到主内容</a>
+    <div class="network-bar" id="networkBar"></div>
+    <div class="app-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar" role="navigation" aria-label="主导航">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/>
+                    </svg>
+                </div>
+                <span class="logo-text">PageIndex AI</span>
+                <button class="theme-toggle" id="themeToggle" title="切换深色模式" style="margin-left:auto">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="themeIcon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                </button>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="library-selector">
+                <div class="nav-label">知识库</div>
+                <div style="display:flex;gap:4px">
+                    <select id="librarySelect" class="library-select">
+                        <option value="default">默认知识库</option>
+                    </select>
+                    <button class="library-manage-btn" id="manageLibsBtn" title="管理知识库">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <nav class="nav-section">
+                <div class="nav-label">主菜单</div>
+                <a class="nav-item active" data-view="chat">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+                    </svg>
+                    <span>对话</span>
+                    <span class="badge" id="chatBadge">0</span>
+                </a>
+                <a class="nav-item" data-view="knowledge">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                    </svg>
+                    <span>知识库</span>
+                </a>
+                <a class="nav-item" data-view="analytics">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/>
+                    </svg>
+                    <span>数据分析</span>
+                </a>
+                <a class="nav-item" data-view="settings">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <span>设置</span>
+                </a>
+            </nav>
+
+            <div class="divider"></div>
+
+            <div class="recent-section">
+                <div class="nav-label">最近对话</div>
+                <div id="recentChats" class="recent-chats-list">
+                    <div class="empty-state-small">暂无对话</div>
+                </div>
+                <button class="new-chat-btn" id="newChatBtnSidebar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"/><path d="M12 5v14"/>
+                    </svg>
+                    新建对话
+                </button>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <div class="user-info">
+                    <div class="user-name">Sarah Chen</div>
+                    <div class="user-role">客服专员</div>
+                </div>
+                <div class="online-dot"></div>
+            </div>
+        </aside>
+
+        <!-- ========== VIEW: CHAT ========== -->
+        <div class="view-container" id="viewChat">
+            <main class="chat-area">
+                <div class="chat-header">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+                    <div class="chat-user-avatar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+                    </div>
+                    <div class="chat-user-info">
+                        <h2 id="chatTitle">新对话</h2>
+                        <div class="status-line">
+                            <span class="status-dot online"></span>
+                            <span id="chatStatus">准备就绪</span>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-icon" title="电话"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></button>
+                        <button class="btn-icon" title="转接"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg></button>
+                        <button class="btn-icon" id="msgSearchToggle" title="搜索消息" aria-label="搜索消息"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></button>
+                        <button class="btn-icon" id="newChatBtn" title="新建对话" aria-label="新建对话"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+                    </div>
+                </div>
+                <div class="msg-search-bar" id="msgSearchBar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" id="msgSearchInput" placeholder="搜索消息..." autocomplete="off">
+                    <button class="btn-icon" onclick="closeMsgSearch()" style="width:28px;height:28px" aria-label="关闭搜索"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+                </div>
+                <div class="messages-area" id="messagesArea" role="log" aria-label="聊天消息" aria-live="polite">
+                    <div class="welcome-message">
+                        <div class="welcome-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M12 8v.01"/><path d="M8 12h.01"/><path d="M16 12h.01"/></svg></div>
+                        <h3>开始新对话</h3>
+                        <p>上传 PDF 文档，随时向我提问。AI 助手将为您的客户提供即时、准确的回答。</p>
+                        <div class="quick-actions">
+                            <button class="quick-btn" onclick="sendQuickMessage('如何重置密码？')">如何重置密码？</button>
+                            <button class="quick-btn" onclick="sendQuickMessage('有哪些计费选项？')">计费选项</button>
+                            <button class="quick-btn" onclick="sendQuickMessage('如何联系客服？')">联系客服</button>
+                        </div>
+                    </div>
+                </div>
+                <button class="scroll-bottom-btn" id="scrollBottomBtn" aria-label="滚动到底部"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg></button>
+                <div class="quick-replies" id="quickReplies" style="display:none">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                    <button class="quick-reply-chip" onclick="sendQuickMessage('如何修改邮箱？')">如何修改邮箱？</button>
+                    <button class="quick-reply-chip" onclick="sendQuickMessage('如何启用两步验证？')">启用两步验证</button>
+                    <button class="quick-reply-chip" onclick="sendQuickMessage('联系客服团队')">联系客服团队</button>
+                </div>
+                <div class="input-area">
+                    <div class="input-box">
+                        <label for="fileUpload" class="btn-attach" title="上传文件"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg><input type="file" id="fileUpload" accept=".pdf,.md,.markdown" hidden></label>
+                        <textarea id="messageInput" placeholder="输入消息..." rows="1" autocomplete="off"></textarea>
+                        <div id="uploadStatus" class="upload-status" style="display:none"></div>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2" style="flex-shrink:0;cursor:pointer"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>
+                    </div>
+                    <button class="send-btn" id="sendBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
+                </div>
+            </main>
+            <aside class="right-panel" id="rightPanel">
+                <div class="rp-header"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg><span>知识来源</span></div>
+                <div class="rp-content" id="rpContent">
+                    <div class="rp-section"><div class="rp-label">检索到的文档</div><div id="sourceCards" class="source-cards"><div class="empty-state-small">发送消息查看相关来源</div></div></div>
+                    <div class="divider"></div>
+                    <div class="rp-section"><div class="rp-label">树索引路径</div><div id="treePath" class="tree-path"><div class="empty-state-small">暂无搜索路径</div></div></div>
+                    <div class="divider"></div>
+                    <div class="rp-section"><div class="rp-label">会话统计</div>
+                        <div class="stats-grid">
+                            <div class="stat-card stat-blue"><span class="stat-value" id="statQueries">0</span><span class="stat-label">查询数</span></div>
+                            <div class="stat-card stat-green"><span class="stat-value" id="statSources">0</span><span class="stat-label">来源数</span></div>
+                            <div class="stat-card stat-amber"><span class="stat-value" id="statTime">-</span><span class="stat-label">平均耗时</span></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- ========== VIEW: KNOWLEDGE BASE ========== -->
+        <div class="view-container" id="viewKnowledge" style="display:none">
+            <div class="page-view">
+                <div class="page-header">
+                    <div class="page-header-left">
+                        <h1>知识库</h1>
+                        <p>管理文档、常见问题和 AI 助手的训练数据</p>
+                    </div>
+                    <button class="btn-primary" id="uploadDocBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg> 上传文档</button>
+                </div>
+                <div class="page-toolbar">
+                    <div class="search-box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A1A1AA" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input type="text" placeholder="搜索文档、常见问题..." id="kbSearch"></div>
+                    <button class="btn-filter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/></svg> 筛选</button>
+                </div>
+                <div class="page-tabs">
+                    <div class="page-tab active">全部文档</div>
+                    <div class="page-tab">用户指南</div>
+                    <div class="page-tab">常见问题</div>
+                    <div class="page-tab">政策文件</div>
+                    <div class="page-tab">API 文档</div>
+                </div>
+                <div class="kb-stats-row">
+                    <div class="kb-stat blue"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg><div><span class="kb-stat-val" id="kbTotal">0</span><span class="kb-stat-label">总文档数</span></div></div>
+                    <div class="kb-stat green"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg><div><span class="kb-stat-val" id="kbIndexed">0</span><span class="kb-stat-label">已索引</span></div></div>
+                    <div class="kb-stat amber"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><div><span class="kb-stat-val">0</span><span class="kb-stat-label">处理中</span></div></div>
+                    <div class="kb-stat red"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg><div><span class="kb-stat-val">0</span><span class="kb-stat-label">失败</span></div></div>
+                </div>
+                <div id="kbUploadStatus" class="upload-status" style="display:none"></div>
+                <div class="kb-table" id="kbTable">
+                    <div class="kb-table-header">
+                        <div class="kb-col-name">文档名称</div>
+                        <div class="kb-col-type">类型</div>
+                        <div class="kb-col-status">状态</div>
+                        <div class="kb-col-chunks">分块数</div>
+                        <div class="kb-col-updated">最后更新</div>
+                        <div class="kb-col-actions">操作</div>
+                    </div>
+                    <div id="kbTableBody" class="kb-table-body">
+                        <div class="empty-state-small">暂无文档，点击"上传文档"开始使用</div>
+                    </div>
+                </div>
+                <!-- Document Detail Drawer -->
+                <div class="doc-detail-drawer" id="docDetailDrawer">
+                    <div class="doc-detail-header">
+                        <button class="btn-icon" id="docDetailBack" aria-label="返回"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></button>
+                        <div class="doc-detail-title-area">
+                            <h2 id="docDetailName">文档名称</h2>
+                            <p id="docDetailMeta"></p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn-primary" id="docOpenFileBtn" style="padding:10px 16px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg> 打开文件</button>
+                            <button class="btn-filter" id="docReindexBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg> 重新索引</button>
+                            <button class="btn-danger-outline" id="docDeleteBtn">删除文档</button>
+                        </div>
+                    </div>
+                    <div class="doc-detail-body">
+                        <div class="doc-desc-section">
+                            <label>文档描述</label>
+                            <textarea id="docDescEdit" class="field-input" rows="3"></textarea>
+                            <button class="btn-primary" id="docDescSaveBtn" style="align-self:flex-start;margin-top:8px;padding:8px 16px;font-size:12px">保存描述</button>
+                        </div>
+                        <!-- Spec Sheet Data (shown only for solar/storage specs) -->
+                        <div id="specDataSection" style="display:none">
+                            <div class="settings-section" style="gap:16px">
+                                <h3 style="display:flex;align-items:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2"><path d="M12 3v1m0 16v1m-8-9H3m18 0h-1m-2.636-6.364-.707.707M6.343 17.657l-.707.707m0-12.728.707.707m11.314 11.314.707.707"/><circle cx="12" cy="12" r="4"/></svg> 光储产品参数</h3>
+                                <div id="specProductInfo"></div>
+                                <div id="specElectricalTable"></div>
+                                <div id="specMechanical"></div>
+                                <div id="specWarranty"></div>
+                                <div id="specFeatures"></div>
+                            </div>
+                        </div>
+                        <div class="doc-chunks-section">
+                            <div class="doc-chunks-header">
+                                <h3>索引分块 (<span id="docChunkCount">0</span>)</h3>
+                            </div>
+                            <div id="docChunksList" class="doc-chunks-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== VIEW: ANALYTICS ========== -->
+        <div class="view-container" id="viewAnalytics" style="display:none">
+            <div class="page-view">
+                <div class="page-header">
+                    <div class="page-header-left">
+                        <h1>数据分析</h1>
+                        <p>监控性能指标和对话洞察</p>
+                    </div>
+                    <div class="page-header-actions">
+                        <button class="btn-filter"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg> 最近 7 天</button>
+                        <button class="btn-primary" id="exportCsvBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg> 导出</button>
+                    </div>
+                </div>
+                <div class="analytics-content">
+                    <div class="metrics-row">
+                        <div class="metric-card"><div class="metric-top"><span class="metric-label">总对话数</span><div class="metric-icon blue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></div></div><div class="metric-value" id="anTotalConv">0</div><div class="metric-change up"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> +0% 较上周</div></div>
+                        <div class="metric-card"><div class="metric-top"><span class="metric-label">解决率</span><div class="metric-icon green"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg></div></div><div class="metric-value">-</div><div class="metric-change up"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> 暂无</div></div>
+                        <div class="metric-card"><div class="metric-top"><span class="metric-label">平均响应时间</span><div class="metric-icon amber"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div></div><div class="metric-value" id="anAvgTime">-</div><div class="metric-change up"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></svg> 暂无</div></div>
+                        <div class="metric-card"><div class="metric-top"><span class="metric-label">客户满意度</span><div class="metric-icon purple"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div></div><div class="metric-value">-</div><div class="metric-change up"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg> 暂无</div></div>
+                    </div>
+                    <div class="analytics-charts">
+                        <div class="chart-card flex-2">
+                            <div class="chart-header"><span class="chart-title">对话趋势</span><div class="chart-legend"><span class="legend-item"><span class="legend-dot blue"></span>已解决</span><span class="legend-item"><span class="legend-dot amber"></span>已转接</span></div></div>
+                            <div style="flex:1;position:relative;min-height:200px"><canvas id="analyticsCanvas"></canvas></div>
+                        </div>
+                        <div class="chart-card flex-1">
+                            <div class="chart-header"><span class="chart-title">热门查询主题</span><span class="chart-badge">本周</span></div>
+                            <div id="topQueryList" class="top-query-list"><div class="empty-state-small">暂无查询数据</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== VIEW: SETTINGS ========== -->
+        <div class="view-container" id="viewSettings" style="display:none">
+            <div class="settings-layout">
+                <nav class="settings-nav">
+                    <a class="settings-nav-item active" data-settings-page="general"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> 通用</a>
+                    <a class="settings-nav-item" data-settings-page="aimodel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> AI 模型</a>
+                    <a class="settings-nav-item" data-settings-page="notifications"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg> 通知</a>
+                    <a class="settings-nav-item" data-settings-page="danger"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg> 安全</a>
+                </nav>
+                <div class="settings-content">
+                    <div class="page-header" id="settingsHeader">
+                        <div class="page-header-left"><h1 id="settingsTitle">通用设置</h1><p id="settingsDesc">管理账户设置和偏好</p></div>
+                        <button class="btn-primary" id="settingsSaveBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> 保存更改</button>
+                    </div>
+                    <div class="settings-scroll">
+                        <!-- General Settings Page -->
+                        <div class="settings-page" id="settingsGeneral">
+                            <div class="settings-section">
+                                <div class="settings-section-header">
+                                    <div class="settings-avatar" id="avatarPreview"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+                                    <div><h3>个人信息</h3><p>更新您的个人资料和头像</p></div>
+                                    <button class="btn-secondary" id="changeAvatarBtn">更换头像</button>
+                                    <input type="file" id="avatarUpload" accept="image/*" hidden>
+                                </div>
+                                <div class="settings-fields">
+                                    <div class="field-group"><label>姓名</label><input type="text" id="settingName" class="field-input"></div>
+                                    <div class="field-group"><label>邮箱地址</label><input type="email" id="settingEmail" class="field-input"></div>
+                                </div>
+                                <div class="settings-fields">
+                                    <div class="field-group"><label>角色</label><select id="settingRole" class="field-input"><option>客服专员</option><option>管理员</option><option>技术支持</option><option>运营经理</option></select></div>
+                                    <div class="field-group"><label>时区</label><select id="settingTimezone" class="field-input"><option>UTC+8 (Asia/Shanghai)</option><option>UTC+9 (Asia/Tokyo)</option><option>UTC+0 (Europe/London)</option><option>UTC-5 (America/New_York)</option><option>UTC-8 (America/Los_Angeles)</option></select></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Model Page -->
+                        <div class="settings-page" id="settingsAimodel" style="display:none">
+                            <div class="settings-section">
+                                <h3>AI 模型配置</h3>
+                                <p class="section-desc">选择和配置 AI 助手使用的语言模型</p>
+                                <div class="divider"></div>
+                                <div class="settings-fields">
+                                    <div class="field-group"><label>语言模型</label><select id="settingModel" class="field-input"><option value="gpt-4o-mini">GPT-4o Mini（快速）</option><option value="gpt-4o">GPT-4o（高质量）</option><option value="gpt-4-turbo">GPT-4 Turbo</option><option value="gpt-3.5-turbo">GPT-3.5 Turbo（经济）</option></select></div>
+                                    <div class="field-group"><label>温度 (Temperature)</label><div style="display:flex;align-items:center;gap:12px"><input type="range" id="settingTemp" min="0" max="1" step="0.1" value="0.7" style="flex:1"><span id="settingTempVal" style="font-size:13px;font-weight:600;color:var(--accent);min-width:30px">0.7</span></div></div>
+                                </div>
+                                <div class="settings-fields">
+                                    <div class="field-group"><label>最大回复长度 (tokens)</label><select id="settingMaxTokens" class="field-input"><option value="1024">1024（简短）</option><option value="2048" selected>2048（标准）</option><option value="4096">4096（详细）</option></select></div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="toggle-row"><div><div class="toggle-title">自动建议回复</div><div class="toggle-desc">AI 将根据对话上下文自动建议回复</div></div><label class="toggle"><input type="checkbox" id="settingAutoSuggest" checked><span class="toggle-slider"></span></label></div>
+                                <div class="toggle-row"><div><div class="toggle-title">知识库检索增强 (RAG)</div><div class="toggle-desc">使用上传的文档进行检索增强生成</div></div><label class="toggle"><input type="checkbox" id="settingRag" checked><span class="toggle-slider"></span></label></div>
+                                <div class="toggle-row"><div><div class="toggle-title">对话记录</div><div class="toggle-desc">存储对话数据用于分析和模型改进</div></div><label class="toggle"><input type="checkbox" id="settingLogging"><span class="toggle-slider"></span></label></div>
+                            </div>
+                        </div>
+
+                        <!-- Notifications Page -->
+                        <div class="settings-page" id="settingsNotifications" style="display:none">
+                            <div class="settings-section">
+                                <h3>通知偏好</h3>
+                                <p class="section-desc">配置何时以及如何接收通知</p>
+                                <div class="divider"></div>
+                                <div class="toggle-row"><div><div class="toggle-title">新对话分配</div><div class="toggle-desc">当有新对话分配给您时通知</div></div><label class="toggle"><input type="checkbox" id="notifNewConv" checked><span class="toggle-slider"></span></label></div>
+                                <div class="toggle-row"><div><div class="toggle-title">对话自动解决</div><div class="toggle-desc">当 AI 自动解决对话时通知</div></div><label class="toggle"><input type="checkbox" id="notifResolution" checked><span class="toggle-slider"></span></label></div>
+                                <div class="toggle-row"><div><div class="toggle-title">对话升级转接</div><div class="toggle-desc">当对话被转接给人工时通知</div></div><label class="toggle"><input type="checkbox" id="notifEscalation" checked><span class="toggle-slider"></span></label></div>
+                                <div class="toggle-row"><div><div class="toggle-title">周报通知</div><div class="toggle-desc">每周发送分析报告摘要</div></div><label class="toggle"><input type="checkbox" id="notifWeekly"><span class="toggle-slider"></span></label></div>
+                                <div class="toggle-row"><div><div class="toggle-title">声音提醒</div><div class="toggle-desc">收到新消息时播放提示音</div></div><label class="toggle"><input type="checkbox" id="notifSound" checked><span class="toggle-slider"></span></label></div>
+                            </div>
+                        </div>
+
+                        <!-- Danger Zone Page -->
+                        <div class="settings-page" id="settingsDanger" style="display:none">
+                            <div class="settings-section danger">
+                                <h3 class="danger-title">危险操作</h3>
+                                <p class="section-desc">以下操作不可逆，请谨慎执行</p>
+                                <div class="divider danger-divider"></div>
+                                <div class="danger-row"><div><div class="toggle-title">重置所有 AI 训练数据</div><div class="toggle-desc">清除所有已索引文档的训练数据，恢复默认设置</div></div><button class="btn-danger-outline" id="resetDataBtn">重置数据</button></div>
+                                <div class="danger-row"><div><div class="toggle-title">删除工作区</div><div class="toggle-desc">永久删除此工作区、所有对话、文档和索引数据</div></div><button class="btn-danger" id="deleteWorkspaceBtn">删除</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirm Dialog -->
+        <div class="confirm-overlay" id="confirmOverlay">
+            <div class="confirm-dialog">
+                <div class="confirm-icon" id="confirmIcon"></div>
+                <h3 id="confirmTitle"></h3>
+                <p id="confirmDesc"></p>
+                <div class="confirm-actions">
+                    <button class="btn-secondary" id="confirmCancel">取消</button>
+                    <button class="btn-danger" id="confirmOk">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Command Palette -->
+    <div class="cmd-overlay" id="cmdOverlay">
+        <div class="cmd-panel">
+            <div class="cmd-search">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="cmdInput" placeholder="搜索对话、文档、设置..." autocomplete="off">
+                <span class="cmd-kbd">ESC</span>
+            </div>
+            <div class="cmd-section" id="cmdResults">
+                <div class="cmd-section-label">最近</div>
+                <div class="cmd-item active" data-action="view:chat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><span class="cmd-item-text">对话</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg></div>
+                <div class="cmd-item" data-action="view:knowledge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span class="cmd-item-text">知识库</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg></div>
+                <div class="cmd-item" data-action="view:analytics"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg><span class="cmd-item-text">数据分析面板</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg></div>
+            </div>
+            <div class="cmd-section" style="border-top:1px solid var(--border)">
+                <div class="cmd-section-label">快捷操作</div>
+                <div class="cmd-item" data-action="new-chat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg><span class="cmd-item-text">新建对话</span><div class="cmd-item-kbd"><span>⌘</span><span>N</span></div></div>
+                <div class="cmd-item" data-action="upload"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg><span class="cmd-item-text">上传文档</span><div class="cmd-item-kbd"><span>⌘</span><span>U</span></div></div>
+                <div class="cmd-item" data-action="toggle-dark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><span class="cmd-item-text">切换深色模式</span><div class="cmd-item-kbd"><span>⌘</span><span>D</span></div></div>
+                <div class="cmd-item" data-action="view:settings"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span class="cmd-item-text">打开设置</span><div class="cmd-item-kbd"><span>⌘</span><span>,</span></div></div>
+            </div>
+            <div class="cmd-footer">提示：随时按 ⌘K 打开此面板</div>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="/static/js/utils.js"></script>
+    <script src="/static/js/chat.js"></script>
+    <script src="/static/js/kb.js"></script>
+    <script src="/static/js/analytics.js"></script>
+    <script src="/static/js/settings.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
