@@ -195,6 +195,34 @@ aiagent/
 
 ---
 
+## ☕ 打赏支持
+
+如果本仓库对你有帮助,欢迎请作者喝杯咖啡 ☕
+
+<div align="center">
+
+<table>
+<tr>
+<td align="center" width="50%">
+<img src="assets/wechat-pay-qrcode.png" alt="微信支付 · Onelong" width="260" />
+<br/>
+<sub><b>微信支付</b></sub>
+</td>
+<td align="center" width="50%">
+<img src="assets/alipay-qrcode.png" alt="支付宝 · Onelong" width="260" />
+<br/>
+<sub><b>支付宝</b></sub>
+</td>
+</tr>
+</table>
+
+</div>
+
+> 你的支持会用于:维护和更新本系列、补充新行业落地案例、保障 livetoken endpoint 测试环境稳定运行。
+> 打赏不是回报作者,而是让这套实战内容**继续更新下去**的燃料 🔥
+
+---
+
 ## License
 
 [MIT](LICENSE)
