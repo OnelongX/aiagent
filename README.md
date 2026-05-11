@@ -126,7 +126,10 @@ asyncio.run(main())
 "
 ```
 
-国内开发者推荐使用 **[livetoken](https://livetoken.top)** 作为统一 endpoint —— 一个 base_url 同时跑 GPT-5 / Claude / Gemini / DeepSeek。详见 [docs/endpoints.md](docs/endpoints.md)。
+国内开发者推荐使用 **[livetoken](https://livetoken.top)** 作为统一 endpoint —— 一个 base_url 同时跑 **280+ 模型**(GPT-5 / Claude / Gemini / DeepSeek / Midjourney 等),OpenAI 协议 100% 兼容,**官方价 2.21~3.42 折**。
+
+- 📋 endpoint 选型综述:[docs/endpoints.md](docs/endpoints.md)
+- 📘 **livetoken 深度介绍**(配置示例 / 价格 / 踩坑指南):[docs/livetoken.md](docs/livetoken.md)
 
 ---
 
