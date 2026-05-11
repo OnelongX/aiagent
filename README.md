@@ -8,7 +8,7 @@
 **从工具栈配置 · 到行业落地 · 到跨行业平移**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Articles](https://img.shields.io/badge/Articles-32-blue.svg)](#内容索引)
+[![Articles](https://img.shields.io/badge/Articles-33-blue.svg)](#内容索引)
 [![Industries](https://img.shields.io/badge/Industries-15+-4ade80.svg)](#)
 [![Public Account](https://img.shields.io/badge/公众号-实战复盘-orange.svg)](#关注公众号实战复盘)
 
