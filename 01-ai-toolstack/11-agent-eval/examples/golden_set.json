@@ -1,0 +1,29 @@
+[
+  {
+    "question": "L-A1 昨天良率是多少",
+    "expected_answer_contains": ["L-A1", "良率"],
+    "expected_tools": ["get_line_kpi"],
+    "ground_truth": "L-A1 昨天良率 96.5%"
+  },
+  {
+    "question": "氢气泄漏了怎么办",
+    "expected_answer_contains": ["EHS", "119"],
+    "expected_emergency_triggered": true,
+    "ground_truth": "立即拨打 EHS 分机 + 119 · 撤离至上风向"
+  },
+  {
+    "question": "Claude 跟 OpenAI 哪个更适合 RAG",
+    "expected_answer_contains": ["Gemini", "上下文"],
+    "ground_truth": "Gemini 2M 上下文最适合 RAG · Claude 共情强 · OpenAI strict JSON"
+  },
+  {
+    "question": "什么是 Subagent",
+    "expected_answer_contains": ["独立 context", "子任务"],
+    "ground_truth": "Subagent 是带独立 context 的子任务专家"
+  },
+  {
+    "question": "Faithfulness 衡量什么",
+    "expected_answer_contains": ["context", "忠"],
+    "ground_truth": "答案是否忠于检索到的 context"
+  }
+]
