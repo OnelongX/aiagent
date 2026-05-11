@@ -8,10 +8,10 @@
 <div align="center">
 
 <a href="https://github.com/OnelongX/aiagent">
-<img src="../../assets/wechat-qrcode.png" width="160" alt="公众号:iamonelong" />
+<img src="../../assets/wechat-qrcode.png" width="320" alt="公众号:IamOnelong" />
 </a>
 
-📖 **本文同步发布于公众号「实战复盘」** · 微信号:`iamonelong`
+📖 **本文同步发布于公众号「实战复盘」** · 微信号:`IamOnelong`
 🌐 [完整代码仓库 · github.com/OnelongX/aiagent](https://github.com/OnelongX/aiagent)
 💡 endpoint 选型:[docs/livetoken.md](../../docs/livetoken.md)
 

@@ -86,9 +86,9 @@
 <table border="0">
 <tr>
 <td align="center" width="240">
-<img src="assets/wechat-qrcode.png" width="220" alt="公众号:iamonelong" />
+<img src="assets/wechat-qrcode.png" width="360" alt="公众号:IamOnelong" />
 <br/>
-<sub><b>扫码关注 · iamonelong</b></sub>
+<sub><b>扫码关注 · IamOnelong</b></sub>
 </td>
 <td align="left">
 
@@ -103,7 +103,7 @@
 - 想看哪个场景的深度落地
 - 你正在做的 Agent 卡在哪一个 Hook
 
-📮 公众号搜索:**iamonelong** · 或扫上方二维码
+📮 公众号搜索:**IamOnelong** · 或扫上方二维码
 
 </td>
 </tr>
