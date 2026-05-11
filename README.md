@@ -36,7 +36,7 @@
 
 ## 内容索引
 
-### 第一阶段:AI 工具栈(7 篇)
+### 第一阶段:AI 工具栈(8 篇 · 三家 SDK 全覆盖)
 
 从用 AI 编程工具,到用官方 SDK 造自己的 AI Agent。
 
@@ -48,7 +48,8 @@
 | 4 | [opencode 配置教程](01-ai-toolstack/04-opencode/) | 75+ 模型聚合编程助手 |
 | 5 | [Hermes + OpenClaw 配置](01-ai-toolstack/05-hermes-openclaw/) | 个人 AI 网关 + 工具编排 |
 | 6 | [Claude Agent SDK 完整教程](01-ai-toolstack/06-claude-agent-sdk/) | Python + TS 双语 · 6 大核心能力 |
-| 7 | [OpenAI SDK 完整教程](01-ai-toolstack/07-openai-sdk/) | Responses API + Agents SDK · 8 大能力 · 跟 Claude 对照 |
+| 7 | [OpenAI SDK 完整教程](01-ai-toolstack/07-openai-sdk/) | Responses API + Agents SDK · 8 大能力 |
+| 8 | [Gemini / Google AI SDK 完整教程](01-ai-toolstack/08-gemini-sdk/) | google-genai + ADK · 2M 上下文 + 原生多模态 · 三家对照 |
 
 ### 第二阶段:行业落地(13 篇 · 收官)
 
@@ -182,7 +183,7 @@ aiagent/
 │   └── endpoints.md                # endpoint 选型 + 配置示例
 ├── sync_to_github.py               # 本地同步脚本(WeChat → GitHub)
 ├── .github/workflows/              # CI:自动更新索引 + link check
-├── 01-ai-toolstack/                # AI 工具栈 7 篇
+├── 01-ai-toolstack/                # AI 工具栈 8 篇(三家 SDK 全覆盖)
 ├── 02-industry-cases/              # 行业落地 13 篇
 ├── 03-cross-industry/              # 跨行业平移 2 篇
 └── 04-survey/                      # 阶段性综述
