@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manufacturing AI Assistant · 行业落地 #13</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">🏭</span>
+      <div>
+        <h1>Manufacturing AI Assistant</h1>
+        <small>行业落地 #13 · MES / 工艺 / 质检 / PdM / 排程 / SOP-ECN</small>
+      </div>
+    </div>
+    <div class="badge danger">AI 不下指令 · 不替代签字 · 工艺机密保护</div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-target="mes">📊 MES 数据问答</button>
+    <button class="tab" data-target="process">⚙️ 工艺参数推荐</button>
+    <button class="tab" data-target="qc">🔍 质检视觉</button>
+    <button class="tab" data-target="pdm">🛠️ PdM 预测性维护</button>
+    <button class="tab" data-target="scheduling">📅 排程辅助</button>
+    <button class="tab" data-target="sop">📚 SOP / ECN</button>
+    <button class="tab" data-target="pii">🔒 PII 脱敏</button>
+  </nav>
+
+  <main>
+    <!-- MES 问答 -->
+    <section id="mes" class="panel active">
+      <div class="hint">MES 只读 · 自然语言查 KPI / 故障 / 良率 · 数据从 MES 实拿</div>
+      <label>提问
+        <input id="mes-q" value="L-A1 昨天良率多少" />
+      </label>
+      <label>车间权限
+        <select id="mes-ws">
+          <option value="*">* 全部</option>
+          <option value="WS-A">WS-A 前段</option>
+          <option value="WS-B">WS-B 中段</option>
+          <option value="WS-C">WS-C 测试</option>
+          <option value="WS-D">WS-D 包装</option>
+        </select>
+      </label>
+      <button onclick="runMES()">提问</button>
+      <pre id="mes-out" class="out"></pre>
+    </section>
+
+    <!-- 工艺参数 -->
+    <section id="process" class="panel">
+      <div class="hint">物理边界硬阻断 · 推荐值越界自动拦截 · 必须先试跑</div>
+      <div class="row">
+        <label>产线 <input id="pr-line" value="L-A2" /></label>
+        <label>工序
+          <select id="pr-step">
+            <option value="sinter">烧结</option>
+            <option value="coating">涂层</option>
+            <option value="smt_reflow">SMT 回流</option>
+            <option value="injection">注塑</option>
+            <option value="cvd">CVD</option>
+          </select>
+        </label>
+        <label>目标良率 <input id="pr-yield" type="number" step="0.001" value="0.985" /></label>
+      </div>
+      <label>当前参数(JSON · 键值对)
+        <textarea id="pr-params" rows="3">{"sinter_temp_c": 700, "sinter_time_min": 60}</textarea>
+      </label>
+      <label>问题描述
+        <textarea id="pr-issue" rows="2">最近 3 天良率从 0.97 跌到 0.93,黑点增多。</textarea>
+      </label>
+      <button onclick="runProcess()">推荐</button>
+      <pre id="pr-out" class="out"></pre>
+    </section>
+
+    <!-- 质检 -->
+    <section id="qc" class="panel">
+      <div class="hint">AI 出初判 · QC 工程师终判盖章 · 安全件 confidence 强制低</div>
+      <div class="row">
+        <label>产线 <input id="qc-line" value="L-A1" /></label>
+        <label>产品类型 <input id="qc-prod" value="涂层片 PN-A0815" /></label>
+      </div>
+      <label>缺陷观察
+        <textarea id="qc-obs" rows="3">涂层中央可见 3 个 0.3mm 气泡 · 边缘有刮痕 1 处约 5mm 长。</textarea>
+      </label>
+      <label>图片描述(可选)
+        <input id="qc-img" placeholder="如 X-ray 看到内部气泡" />
+      </label>
+      <button onclick="runQC()">初判</button>
+      <pre id="qc-out" class="out"></pre>
+    </section>
+
+    <!-- PdM -->
+    <section id="pdm" class="panel">
+      <div class="hint">安全事故关键词 → 不进 LLM · 直接 EHS</div>
+      <label>产线 <input id="pd-line" value="L-A1" /></label>
+      <label>附加观察
+        <textarea id="pd-obs" rows="3">主轴振动比上周大,且有异响,温度升高 5℃。</textarea>
+      </label>
+      <button onclick="runPdM()">检查</button>
+      <pre id="pd-out" class="out"></pre>
+    </section>
+
+    <!-- 排程 -->
+    <section id="scheduling" class="panel">
+      <div class="hint">规则贪心 demo · 生产环境对接 APS / OR-Tools</div>
+      <label>订单(JSON 数组)
+        <textarea id="sc-orders" rows="6">[
+  {"order_id":"SO-001","product":"PN-A0815","qty":3000,"due_date":"2026-05-20","priority":"urgent"},
+  {"order_id":"SO-002","product":"PN-B1212","qty":6000,"due_date":"2026-05-25","priority":"high"},
+  {"order_id":"SO-003","product":"PN-C0907","qty":2000,"due_date":"2026-05-18","priority":"normal"}
+]</textarea>
+      </label>
+      <label>可用产线(逗号分隔) <input id="sc-lines" value="L-A1, L-A2, L-B1" /></label>
+      <label>规划天数 <input id="sc-days" type="number" value="14" /></label>
+      <button onclick="runScheduling()">排程</button>
+      <pre id="sc-out" class="out"></pre>
+    </section>
+
+    <!-- SOP -->
+    <section id="sop" class="panel">
+      <div class="hint">引用必须带版本号 + 生效日期 · ECN 必须说明影响范围</div>
+      <label>问题
+        <input id="sop-q" value="L-A1 涂层开机怎么做?ECN-2026-038 影响哪些 WIP?" />
+      </label>
+      <label>相关产线 <input id="sop-line" value="L-A1" /></label>
+      <button onclick="runSOP()">查询</button>
+      <pre id="sop-out" class="out"></pre>
+    </section>
+
+    <!-- PII -->
+    <section id="pii" class="panel">
+      <div class="hint">8 类 PII / 商业秘密:身份证 / 手机 / 工号 / SN / 客户料号 / Lot 等</div>
+      <label>原文
+        <textarea id="pii-in" rows="5">操作工张三,工号 ZG12345,身份证 110101199001011234,手机 13800138001。客户料号:PN-A0815,批次号:Lot-20260511-001,SN:SN-A0815-998877,配方代号:RX-2026-V3,催化剂 CAT77。</textarea>
+      </label>
+      <button onclick="runPII()">脱敏</button>
+      <pre id="pii-out" class="out"></pre>
+    </section>
+  </main>
+
+  <footer>
+    <span>本工具是工艺辅助 · 工艺工程师 / QC / 维修组签字担责 · MES 默认只读</span>
+    <a href="https://github.com/OnelongX/aiagent">github.com/OnelongX/aiagent</a>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
