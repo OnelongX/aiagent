@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Education AI Assistant · 教育行业 AI 助理</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">📚</span>
+      <h1>Education AI Assistant</h1>
+      <span class="tag">行业落地 #10</span>
+    </div>
+    <nav class="tabs">
+      <button class="tab active" data-tab="grade-obj">📝 客观题判分</button>
+      <button class="tab" data-tab="grade-essay">✍️ 作文批改</button>
+      <button class="tab" data-tab="analytics">📊 学情分析</button>
+      <button class="tab" data-tab="report">📨 周报草稿</button>
+      <button class="tab" data-tab="parent-qa">💬 家长答疑</button>
+      <button class="tab" data-tab="recommend">🎯 个性化推荐</button>
+      <button class="tab" data-tab="pii">🔒 PII 脱敏</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="notice">
+      🎓 <strong>AI 辅助 · 不是教师</strong> · 教师签字 · 教师担责
+      <span class="notice-detail">
+        未成年 PII 严格脱敏 · 主观题二审 · 5 条家校沟通红线 · 焦虑监控 · 双减对齐
+      </span>
+    </div>
+
+    <!-- 1. 客观题判分 -->
+    <section class="panel active" id="grade-obj">
+      <h2>📝 客观题自动判分</h2>
+      <p class="hint">选择 / 填空 / 判断 · 规则匹配 · 不走 LLM · 立即省 30-50% 批改时间。</p>
+      <div class="form">
+        <label>题目列表(JSON 数组)<textarea id="g-obj" rows="12">[
+  {"question_id": "Q1", "type": "multiple_choice", "student_answer": "B", "correct_answer": "B"},
+  {"question_id": "Q2", "type": "fill_blank", "student_answer": "10", "correct_answer": "10"},
+  {"question_id": "Q3", "type": "judge", "student_answer": "对", "correct_answer": "错"}
+]</textarea></label>
+        <button onclick="gradeObj()">自动判分</button>
+      </div>
+      <div class="result" id="g-obj-result"></div>
+    </section>
+
+    <!-- 2. 作文批改 -->
+    <section class="panel" id="grade-essay">
+      <h2>✍️ 作文批改(LLM 初评 + 教师二审)</h2>
+      <p class="hint">4 维度评分 + diff 改进 + 敏感话题预扫描。<strong>必须教师二审才能发学生</strong>。</p>
+      <div class="form">
+        <label>作文题目<input id="e-prompt" placeholder="如:我最难忘的一件事" /></label>
+        <label>学生作文<textarea id="e-text" rows="8"></textarea></label>
+        <button onclick="gradeEssay()">批改作文</button>
+      </div>
+      <div class="result" id="e-result"></div>
+    </section>
+
+    <!-- 3. 学情分析 -->
+    <section class="panel" id="analytics">
+      <h2>📊 学情分析(班级薄弱知识点)</h2>
+      <p class="hint">按知识点聚合 · TOP 5 薄弱 · 教学建议 · <strong>不输出个人成绩排名</strong>。</p>
+      <div class="form">
+        <label>班级 ID<input id="a-class" value="CLASS-001" /></label>
+        <label>批改结果(JSON 数组 · 学生 ID 已脱敏)<textarea id="a-results" rows="10">[
+  {"student_id": "S1", "knowledge_point": "一元一次方程", "correct": false},
+  {"student_id": "S2", "knowledge_point": "一元一次方程", "correct": false},
+  {"student_id": "S3", "knowledge_point": "一元一次方程", "correct": true},
+  {"student_id": "S1", "knowledge_point": "一次函数", "correct": true},
+  {"student_id": "S2", "knowledge_point": "一次函数", "correct": false}
+]</textarea></label>
+        <button onclick="doAnalytics()">分析</button>
+      </div>
+      <div class="result" id="a-result"></div>
+    </section>
+
+    <!-- 4. 周报草稿 -->
+    <section class="panel" id="report">
+      <h2>📨 周报草稿(家校沟通)</h2>
+      <p class="hint">LLM 起草 + 5 红线检测(公开比较/标签化/焦虑诱导/越权评价/经济压力)+ 教师签字栏。</p>
+      <div class="form">
+        <label>班级 ID<input id="r-class" value="CLASS-001" /></label>
+        <label>学情数据(JSON)<textarea id="r-data" rows="6">{
+  "overall_rate": 0.78,
+  "weak_points": ["一元一次方程", "一次函数"],
+  "highlights": ["全班作业完成率 96%"]
+}</textarea></label>
+        <label>教师备注(可选)<textarea id="r-notes" rows="3" placeholder="例如:本周开始新章节,需要家长多关注..."></textarea></label>
+        <button onclick="genReport()">起草周报</button>
+      </div>
+      <div class="result" id="r-result"></div>
+    </section>
+
+    <!-- 5. 家长答疑 -->
+    <section class="panel" id="parent-qa">
+      <h2>💬 家长答疑(意图分流)</h2>
+      <p class="hint">5 类意图:课程安排 / 作业要求 / 孩子表现 / 教育焦虑 / 经济咨询 · <strong>孩子表现 / 焦虑 / 经济</strong> 走特殊路径。</p>
+      <div class="form">
+        <label>家长问题<textarea id="pq-q" rows="4" placeholder="例如:明天的语文作业是什么?"></textarea></label>
+        <button onclick="parentQA()">咨询</button>
+      </div>
+      <div class="result" id="pq-result"></div>
+    </section>
+
+    <!-- 6. 个性化推荐 -->
+    <section class="panel" id="recommend">
+      <h2>🎯 个性化题目推荐</h2>
+      <p class="hint">基于薄弱知识点 + 掌握度 · 难度梯度 · <strong>每日时长上限(双减)</strong>。</p>
+      <div class="form">
+        <label>学生 ID<input id="rec-sid" value="S001" /></label>
+        <label>学科<input id="rec-subj" value="数学" /></label>
+        <label>薄弱知识点(逗号分隔)<input id="rec-weak" value="一元一次方程, 一次函数" /></label>
+        <label>当前掌握度 (JSON)<textarea id="rec-mastery" rows="3">{
+  "一元一次方程": 0.42,
+  "一次函数": 0.55
+}</textarea></label>
+        <label>推荐数量<input id="rec-count" type="number" value="6" /></label>
+        <button onclick="recommend_()">推荐题目</button>
+      </div>
+      <div class="result" id="rec-result"></div>
+    </section>
+
+    <!-- 7. PII 脱敏 -->
+    <section class="panel" id="pii">
+      <h2>🔒 教育版 PII 脱敏</h2>
+      <p class="hint">未成年 PII 比成人更严:姓名/学号/班级/学校/家长信息/地址/手机/邮箱/身份证 全识别。</p>
+      <div class="form">
+        <label>原文<textarea id="p-text" rows="6" placeholder="例如:三年级二班张三..."></textarea></label>
+        <button onclick="doPII()">脱敏</button>
+      </div>
+      <div class="result" id="p-result"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      📦 <a href="https://github.com/OnelongX/aiagent">GitHub · OnelongX/aiagent</a>
+      · 行业落地 #10 · <strong>AI 辅助教育应遵守未成年人保护法 / 教育数据规范 / 双减政策</strong>
+    </p>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
