@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finance AI Assistant · 行业落地 #12</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">🏦</span>
+      <div>
+        <h1>Finance AI Assistant</h1>
+        <small>行业落地 #12 · KYC / AML / 信贷 / 投顾 / 适当性 / 客户</small>
+      </div>
+    </div>
+    <div class="badge danger">AI 不荐股 · 不授信 · 不替代真人尽调</div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-target="kyc">🪪 KYC 审核</button>
+    <button class="tab" data-target="aml">🛡️ AML 反洗钱</button>
+    <button class="tab" data-target="credit">💳 信贷风控</button>
+    <button class="tab" data-target="advisory">📊 投资陪伴</button>
+    <button class="tab" data-target="suitability">⚖️ 适当性匹配</button>
+    <button class="tab" data-target="customer">👥 客户分析</button>
+    <button class="tab" data-target="pii">🔒 PII 脱敏</button>
+  </nav>
+
+  <main>
+    <!-- KYC -->
+    <section id="kyc" class="panel active">
+      <div class="hint">KYC 仅辅助 · 不替代人脸核身 · 最终合规专员签字</div>
+      <label>客户姓名 <input id="kyc-name" value="张三" /></label>
+      <label>身份证号 <input id="kyc-id" value="110101199001011234" /></label>
+      <div class="row">
+        <label>职业 <input id="kyc-occupation" value="软件工程师" /></label>
+        <label>年收入 <input id="kyc-income" type="number" value="300000" /></label>
+      </div>
+      <label>资金来源 <input id="kyc-fund" value="工资积蓄 + 股权变现" /></label>
+      <label>开户用途 <input id="kyc-purpose" value="家庭资产配置" /></label>
+      <label><input type="checkbox" id="kyc-pep" /> 自报政要 / 公职关联 (PEP)</label>
+      <button onclick="runKYC()">提交</button>
+      <pre id="kyc-out" class="out"></pre>
+    </section>
+
+    <!-- AML -->
+    <section id="aml" class="panel">
+      <div class="hint">规则评分 · ≥70 强制可疑交易报告(STR)· 不告知客户</div>
+      <div class="row">
+        <label>金额 (RMB) <input id="aml-amount" type="number" value="100000" /></label>
+        <label>24h 笔数 <input id="aml-count" type="number" value="6" /></label>
+        <label>新户天数 <input id="aml-new" type="number" value="3" /></label>
+      </div>
+      <div class="row">
+        <label><input type="checkbox" id="aml-cross" /> 跨境</label>
+        <label><input type="checkbox" id="aml-risky" /> 对手方高风险</label>
+        <label><input type="checkbox" id="aml-night" /> 夜间</label>
+        <label><input type="checkbox" id="aml-cash" /> 现金密集</label>
+      </div>
+      <label>交易备注 <input id="aml-note" placeholder="如 货款 / 借款 / 朋友间转账" /></label>
+      <button onclick="runAML()">提交</button>
+      <pre id="aml-out" class="out"></pre>
+    </section>
+
+    <!-- 信贷 -->
+    <section id="credit" class="panel">
+      <div class="hint">AI 辅助评分 · 反欺诈 + 反歧视审计 · 决定以信贷员为准</div>
+      <div class="row">
+        <label>姓名 <input id="cr-name" value="李四" /></label>
+        <label>年龄 <input id="cr-age" type="number" value="32" /></label>
+        <label>月收入 <input id="cr-income" type="number" value="20000" /></label>
+        <label>月负债 <input id="cr-debt" type="number" value="6000" /></label>
+      </div>
+      <div class="row">
+        <label>申请额度 <input id="cr-loan" type="number" value="100000" /></label>
+        <label>用途 <input id="cr-purpose" value="家装" /></label>
+        <label>所在城市 <input id="cr-region" value="北京" /></label>
+      </div>
+      <label>就业 <input id="cr-emp" value="互联网公司 / 5 年" /></label>
+      <label>征信摘要 <textarea id="cr-hist" rows="2">近 24 月无逾期,信用卡使用率 35%。</textarea></label>
+      <div class="row">
+        <label>设备风险
+          <select id="cr-device">
+            <option value="low">低</option>
+            <option value="medium">中</option>
+            <option value="high">高</option>
+          </select>
+        </label>
+        <label><input type="checkbox" id="cr-bl" /> 命中黑名单</label>
+      </div>
+      <button onclick="runCredit()">提交</button>
+      <pre id="cr-out" class="out"></pre>
+    </section>
+
+    <!-- 投资陪伴 -->
+    <section id="advisory" class="panel">
+      <div class="hint">AI 绝不荐股 / 荐基金 · 监管硬红线 · 反诈关键词命中熔断</div>
+      <label>客户风险等级
+        <select id="adv-level">
+          <option value="">未提供</option>
+          <option value="C1">C1 保守</option>
+          <option value="C2">C2 稳健</option>
+          <option value="C3">C3 平衡</option>
+          <option value="C4">C4 积极</option>
+          <option value="C5">C5 激进</option>
+        </select>
+      </label>
+      <label>问题
+        <textarea id="adv-q" rows="3">最近债市波动大,我应该卖掉债基换成银行存款吗?</textarea>
+      </label>
+      <button onclick="runAdvisory()">提交</button>
+      <pre id="adv-out" class="out"></pre>
+    </section>
+
+    <!-- 适当性 -->
+    <section id="suitability" class="panel">
+      <div class="hint">客户 C 级 × 产品 R 级 · 不匹配需签《风险揭示书》+ 合规审批</div>
+      <div class="row">
+        <label>客户等级
+          <select id="su-level">
+            <option value="C1">C1</option>
+            <option value="C2" selected>C2</option>
+            <option value="C3">C3</option>
+            <option value="C4">C4</option>
+            <option value="C5">C5</option>
+          </select>
+        </label>
+        <label>产品代号
+          <select id="su-code">
+            <option value="MMF-001">MMF-001 货基 R1</option>
+            <option value="BOND-001">BOND-001 利率债 R2</option>
+            <option value="MIX-002" selected>MIX-002 偏股混合 R4</option>
+            <option value="STK-003">STK-003 小盘成长 R5</option>
+            <option value="PRIV-001">PRIV-001 私募量化 R5</option>
+            <option value="STR-001">STR-001 雪球结构 R5</option>
+          </select>
+        </label>
+        <label>投资金额 <input id="su-amount" type="number" value="200000" /></label>
+        <label>持有周期
+          <select id="su-horizon">
+            <option value="3个月">3 个月</option>
+            <option value="6个月">6 个月</option>
+            <option value="1年" selected>1 年</option>
+            <option value="3年">3 年以上</option>
+          </select>
+        </label>
+      </div>
+      <button onclick="runSuitability()">提交</button>
+      <pre id="su-out" class="out"></pre>
+    </section>
+
+    <!-- 客户分析 -->
+    <section id="customer" class="panel">
+      <div class="hint">画像 + 流失预警 · 给 RM 用 · 不直接对客户营销</div>
+      <div class="row">
+        <label>客户号 <input id="ci-id" value="6688001234" /></label>
+        <label>年龄 <input id="ci-age" type="number" value="55" /></label>
+        <label>AUM <input id="ci-aum" type="number" value="1500000" /></label>
+        <label>NPS <input id="ci-nps" type="number" value="6" /></label>
+      </div>
+      <div class="row">
+        <label>上次活跃距今(天)<input id="ci-act" type="number" value="35" /></label>
+        <label>30 天赎回额 <input id="ci-red" type="number" value="500000" /></label>
+        <label>30 天交互 <input id="ci-int" type="number" value="2" /></label>
+      </div>
+      <label>持有产品(逗号分隔) <input id="ci-prod" value="MMF-001, BOND-001, MIX-001" /></label>
+      <button onclick="runCustomer()">提交</button>
+      <pre id="ci-out" class="out"></pre>
+    </section>
+
+    <!-- PII -->
+    <section id="pii" class="panel">
+      <div class="hint">11 类 PII:身份证 / 手机 / 邮箱 / 地址 / 姓名 + 银行卡 / CVV / 账号 / 客户号 / 流水号</div>
+      <label>原文
+        <textarea id="pii-in" rows="5">客户张三, 身份证 110101199001011234, 手机 13800138001, 银行卡 6222021234567890123, CVV 888, 客户号:6688001234, 账号:6225881234567890, 交易号:T20260511A001。</textarea>
+      </label>
+      <button onclick="runPII()">脱敏</button>
+      <pre id="pii-out" class="out"></pre>
+    </section>
+  </main>
+
+  <footer>
+    <span>本工具是持牌机构辅助 · AI 不荐股 · 不授信 · 合规专员签字担责</span>
+    <a href="https://github.com/OnelongX/aiagent">github.com/OnelongX/aiagent</a>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
