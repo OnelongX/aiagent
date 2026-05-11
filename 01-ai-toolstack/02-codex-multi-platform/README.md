@@ -2,6 +2,17 @@
 
 > **TL;DR**:Codex 其实不只是 CLI。它有 **3 个端**:**CLI / 桌面 app / VS Code 插件**。**3 个端共享同一份 `~/.codex/config.toml`** —— 你配一次,3 个端全部生效,不用在每个端的设置面板里重新配 API key。这是 Codex 一个**很多人没意识到的福利**。
 
+
+<div align="center">
+
+📖 **本文同步发布于公众号「实战复盘」** · 每周更新 AI Agent 行业落地实战
+🌐 完整代码仓库:[github.com/OnelongX/aiagent](https://github.com/OnelongX/aiagent)
+💡 endpoint 选型推荐:[docs/endpoints.md](../../docs/endpoints.md)
+
+</div>
+
+---
+
 承接上一篇《Codex CLI 配置完整教程》。
 
 上一篇讲了 CLI 的配置。这一篇讲一个**更实用的事**:**那一份配置文件,3 个端都用**。

@@ -6,6 +6,17 @@
 
 ---
 
+
+<div align="center">
+
+📖 **本文同步发布于公众号「实战复盘」** · 每周更新 AI Agent 行业落地实战
+🌐 完整代码仓库:[github.com/OnelongX/aiagent](https://github.com/OnelongX/aiagent)
+💡 endpoint 选型推荐:[docs/endpoints.md](../../docs/endpoints.md)
+
+</div>
+
+---
+
 ## I. 企业级 ≠ ChatGPT 喂文档
 
 试过的都知道:把公司文档丢进 ChatGPT,前 2 天惊艳,第 3 天发现:

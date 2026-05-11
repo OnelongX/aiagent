@@ -1,0 +1,70 @@
+name: Auto Update Index
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "01-ai-toolstack/**/README.md"
+      - "02-industry-cases/**/README.md"
+      - "03-cross-industry/**/README.md"
+      - "04-survey/**/README.md"
+  workflow_dispatch:
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Regenerate main README article stats
+        run: |
+          python - <<'PY'
+          import re, os, datetime
+          from pathlib import Path
+
+          repo = Path(".")
+          sections = ["01-ai-toolstack", "02-industry-cases", "03-cross-industry", "04-survey"]
+          total = 0
+          for s in sections:
+              for d in sorted((repo / s).iterdir()) if (repo / s).is_dir() else []:
+                  if (d / "README.md").exists():
+                      total += 1
+
+          # Update badge in README
+          readme = repo / "README.md"
+          text = readme.read_text(encoding="utf-8")
+          text = re.sub(
+              r"Articles-\d+-blue",
+              f"Articles-{total}-blue",
+              text
+          )
+          text = re.sub(
+              r"<!-- LAST-UPDATED -->.*<!-- /LAST-UPDATED -->",
+              f"<!-- LAST-UPDATED -->最近更新:{datetime.date.today().isoformat()}<!-- /LAST-UPDATED -->",
+              text,
+              flags=re.S,
+          )
+          readme.write_text(text, encoding="utf-8")
+          print(f"Total articles: {total}")
+          PY
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add README.md
+            git commit -m "auto: update article count + timestamp"
+            git push
+          else
+            echo "No changes."
+          fi

@@ -7,6 +7,17 @@
 
 ---
 
+
+<div align="center">
+
+📖 **本文同步发布于公众号「实战复盘」** · 每周更新 AI Agent 行业落地实战
+🌐 完整代码仓库:[github.com/OnelongX/aiagent](https://github.com/OnelongX/aiagent)
+💡 endpoint 选型推荐:[docs/endpoints.md](../../docs/endpoints.md)
+
+</div>
+
+---
+
 ## I. 跟绿电电商的 4 个核心差异
 
 承接上一篇绿电电商客服。绿电是**标品 + 长决策**,二手手机是**非标 + 快决策 + 双客群** —— 工程上比绿电更难:

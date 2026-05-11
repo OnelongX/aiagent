@@ -4,6 +4,17 @@
 
 ---
 
+
+<div align="center">
+
+📖 **本文同步发布于公众号「实战复盘」** · 每周更新 AI Agent 行业落地实战
+🌐 完整代码仓库:[github.com/OnelongX/aiagent](https://github.com/OnelongX/aiagent)
+💡 endpoint 选型推荐:[docs/endpoints.md](../../docs/endpoints.md)
+
+</div>
+
+---
+
 ## 一、Codex CLI 是什么
 
 OpenAI 官方推出的 **命令行 AI 编程助手**。简单说就是把 ChatGPT / Claude Code 那种"在终端里跑 AI 帮你写代码"的体验做成一个 CLI。

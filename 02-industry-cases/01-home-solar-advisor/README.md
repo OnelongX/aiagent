@@ -6,6 +6,17 @@
 
 ---
 
+
+<div align="center">
+
+📖 **本文同步发布于公众号「实战复盘」** · 每周更新 AI Agent 行业落地实战
+🌐 完整代码仓库:[github.com/OnelongX/aiagent](https://github.com/OnelongX/aiagent)
+💡 endpoint 选型推荐:[docs/endpoints.md](../../docs/endpoints.md)
+
+</div>
+
+---
+
 ## I. 这事到底要做什么
 
 家庭绿电方案这事,光伏设计院 20 年来一直在做。流程很固定:

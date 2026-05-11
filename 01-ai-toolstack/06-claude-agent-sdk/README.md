@@ -2,6 +2,17 @@
 
 > **TL;DR**:Claude Agent SDK = Anthropic 官方推出的 **AI Agent 编程库**,跟 Claude Code CLI **同引擎**——一个是命令行,一个是给你 import 用的库。**Python / TypeScript 双语支持**,内置 10 种工具 + 6 大核心能力(Hooks / Subagents / MCP / Permissions / Sessions / 自定义 Tool)。本文从 Hello World 到 3 个完整 agent 示例全拆。**关键事实**:支持 `ANTHROPIC_BASE_URL` 走第三方 API,所以国内开发者也能跑。
 
+
+<div align="center">
+
+📖 **本文同步发布于公众号「实战复盘」** · 每周更新 AI Agent 行业落地实战
+🌐 完整代码仓库:[github.com/OnelongX/aiagent](https://github.com/OnelongX/aiagent)
+💡 endpoint 选型推荐:[docs/endpoints.md](../../docs/endpoints.md)
+
+</div>
+
+---
+
 承接 AI 工具栈系列前 5 篇(Codex / Claude / opencode / Hermes / OpenClaw)。
 
 那 5 篇全是"配置工具栈"——**用现成的 AI agent 工具**。

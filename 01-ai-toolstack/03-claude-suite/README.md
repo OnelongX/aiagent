@@ -2,6 +2,17 @@
 
 > **TL;DR**:Claude 不只是 claude.ai 网页版。Anthropic 推了 **2 个产品 / 3 个端**:**Claude Desktop App**(聊天 + MCP 工具调用)+ **Claude Code**(CLI + VS Code 扩展,AI 编程)。本文从安装到第三方接入全拆。**关键杀招**:一个 token 同时跑 Codex 和 Claude Code,**国内 AI 编程工作流双引擎**。
 
+
+<div align="center">
+
+📖 **本文同步发布于公众号「实战复盘」** · 每周更新 AI Agent 行业落地实战
+🌐 完整代码仓库:[github.com/OnelongX/aiagent](https://github.com/OnelongX/aiagent)
+💡 endpoint 选型推荐:[docs/endpoints.md](../../docs/endpoints.md)
+
+</div>
+
+---
+
 承接系列 1《Codex CLI 配置完整教程》+ 系列 2《Codex 三端通用配置》。
 
 Codex 那两篇讲了 OpenAI 这边的配置。**这一篇讲 Anthropic 这边**——Claude Desktop + Claude Code。

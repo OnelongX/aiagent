@@ -7,6 +7,17 @@
 
 ---
 
+
+<div align="center">
+
+📖 **本文同步发布于公众号「实战复盘」** · 每周更新 AI Agent 行业落地实战
+🌐 完整代码仓库:[github.com/OnelongX/aiagent](https://github.com/OnelongX/aiagent)
+💡 endpoint 选型推荐:[docs/endpoints.md](../../docs/endpoints.md)
+
+</div>
+
+---
+
 ## I. 跟上篇知识库 Q&A 的 5 个根本差异
 
 接续上一篇企业知识库 Q&A。**那是内部员工提问,这是外部客户对话** —— 看着像同一个东西,工程上是两套系统。

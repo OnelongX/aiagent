@@ -2,6 +2,17 @@
 
 > **TL;DR**:前 4 篇讲的 Codex / Claude Code / opencode —— **AI 在 IDE 里帮你写代码**。这一篇换一个维度:**Hermes Agent**(自我改进 AI agent)+ **OpenClaw**(自托管个人 AI 网关)= **AI 走出 IDE,接入你的微信 / Telegram / Slack / Discord / 飞书 / iMessage 等 20+ 平台**。一个 livetoken token 同时跑 5 个工具的极致工具栈。
 
+
+<div align="center">
+
+📖 **本文同步发布于公众号「实战复盘」** · 每周更新 AI Agent 行业落地实战
+🌐 完整代码仓库:[github.com/OnelongX/aiagent](https://github.com/OnelongX/aiagent)
+💡 endpoint 选型推荐:[docs/endpoints.md](../../docs/endpoints.md)
+
+</div>
+
+---
+
 承接 AI 编程工具栈系列前 4 篇:Codex / Codex 三端 / Claude 全家桶 / opencode。
 
 那 4 篇全是**写代码场景**——AI 帮你在 IDE 里改代码。

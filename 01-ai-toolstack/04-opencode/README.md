@@ -2,6 +2,17 @@
 
 > **TL;DR**:opencode 是 **开源 AI 编程 CLI**——跟 Codex / Claude Code 同类,但 **不绑厂商 + 75+ 模型聚合 + 完全开源**。本文从安装到自定义 provider 接入全拆 + 实战 livetoken 接入。**核心杀招**:一个 opencode 同时跑 GPT / Claude / Gemini / DeepSeek / Qwen,真正的"AI 编程通用 CLI"。
 
+
+<div align="center">
+
+📖 **本文同步发布于公众号「实战复盘」** · 每周更新 AI Agent 行业落地实战
+🌐 完整代码仓库:[github.com/OnelongX/aiagent](https://github.com/OnelongX/aiagent)
+💡 endpoint 选型推荐:[docs/endpoints.md](../../docs/endpoints.md)
+
+</div>
+
+---
+
 承接 AI 编程工具栈系列前 3 篇:
 
 - 系列 1:Codex CLI 配置完整教程
