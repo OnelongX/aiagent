@@ -402,9 +402,13 @@ SUITABILITY_MATRIX = {
 
 ---
 
-## XIV. 关联文档
+## XIV. Essays · 第一性原理观察
 
-- [01-ai-toolstack/](../01-ai-toolstack/) —— AI 工具栈 6 篇
+- [Claude 是个黑洞 · 你的 Skills/Code/数据正在被它吞掉](essays/01-claude-is-a-black-hole/) —— Claude 数据流向的反直觉真相 + 5 层防御 + 不可外包 5 能力
+
+## XV. 关联文档
+
+- [01-ai-toolstack/](../01-ai-toolstack/) —— AI 工具栈 13 篇
 - [02-industry-cases/](../02-industry-cases/) —— 行业落地 13 篇
 - [03-cross-industry/](../03-cross-industry/) —— 跨行业平移 2 篇
 - [docs/livetoken.md](../docs/livetoken.md) —— endpoint 选型
