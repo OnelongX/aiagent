@@ -81,14 +81,35 @@
 
 ## 关于公众号「实战复盘」
 
-> 每周更新 AI Agent 行业落地实战
-> 14 篇沉淀 1 套工程框架 · 跨行业平移已验证 2 个方向
-> 留言区告诉我:你在哪个行业 / 想看哪个场景的下一篇
+<div align="center">
+
+<table border="0">
+<tr>
+<td align="center" width="240">
+<img src="assets/wechat-qrcode.png" width="220" alt="公众号:iamonelong" />
+<br/>
+<sub><b>扫码关注 · iamonelong</b></sub>
+</td>
+<td align="left">
+
+**每周更新 AI Agent 行业落地实战**
+
+📚 16+ 篇沉淀,从 Claude Agent SDK 到全栈产品
+🔧 行业落地系列覆盖绿电 / 合同 / 客服 / 电商 / 论文等场景
+🛠️ 跨行业平移已验证多个方向
 
 **留言区欢迎**:
 - 你在哪个行业 · 卡在哪一步
 - 想看哪个场景的深度落地
 - 你正在做的 Agent 卡在哪一个 Hook
+
+📮 公众号搜索:**iamonelong** · 或扫上方二维码
+
+</td>
+</tr>
+</table>
+
+</div>
 
 ---
 

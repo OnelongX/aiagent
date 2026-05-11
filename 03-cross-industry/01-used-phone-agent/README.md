@@ -10,9 +10,13 @@
 
 <div align="center">
 
-📖 **本文同步发布于公众号「实战复盘」** · 每周更新 AI Agent 行业落地实战
-🌐 完整代码仓库:[github.com/OnelongX/aiagent](https://github.com/OnelongX/aiagent)
-💡 endpoint 选型推荐:[docs/endpoints.md](../../docs/endpoints.md)
+<a href="https://github.com/OnelongX/aiagent">
+<img src="../../assets/wechat-qrcode.png" width="160" alt="公众号:iamonelong" />
+</a>
+
+📖 **本文同步发布于公众号「实战复盘」** · 微信号:`iamonelong`
+🌐 [完整代码仓库 · github.com/OnelongX/aiagent](https://github.com/OnelongX/aiagent)
+💡 endpoint 选型:[docs/livetoken.md](../../docs/livetoken.md)
 
 </div>
 
