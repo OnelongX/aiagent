@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.Python
+*.egg-info/
+.venv/
+venv/
+.env
+.env.local
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+publish_draft.py
+*.tmp
+*.bak
